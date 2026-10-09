@@ -19,8 +19,10 @@ const sep = lang === 'fr' ? ' : ' : ': ';
     <div class="horizon__actions">
       <a class="btn btn--primary" href="#top">{t('horizon.top')}<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M8 14V2M3 7l5-5 5 5"/></svg></a>
       {bh?.liens.live && <a class="btn btn--ghost" href={bh.liens.live} target="_blank" rel="noopener">{t('horizon.bh')}<span class="sr-only">{sep + bh.titre + t('newTab')}</span></a>}
+      <a class="btn btn--ghost" href={`mailto:${SITE.email}`}>{t('contact.write')}</a>
       <a class="btn btn--ghost" href={`https://github.com/${SITE.githubUser}`} target="_blank" rel="noopener">{t('horizon.github')}<span class="sr-only">{t('horizon.githubSr')}</span></a>
     </div>
+    <p class="horizon__contact" id="contact">{T('contact.lead')} <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
     <p class="horizon__small">{T('horizon.small', { y: new Date().getFullYear() })}</p>
   </div>
 </footer>

@@ -3,6 +3,7 @@ import { useT, type Lang } from '../i18n/ui';
 import { ABOUT } from '../i18n/about';
 import { typo } from '../lib/typo';
 import { stats, fmtNumber, monthYear } from '../lib/catalogue';
+import { SITE } from '../config/site';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -25,6 +26,7 @@ const last = Math.max(1, spec.length - 1);
       <p class="kicker"><span>{t('about.kicker.num')}</span><span>{a.kicker}</span></p>
       <h2 class="h2" id="about-title" set:html={typo(a.title, lang)} />
       {a.paragraphs.map((p) => <p set:html={typo(p, lang)} />)}
+      <p class="about__contact">{typo(t('contact.lead'), lang)} <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
     </div>
     <ul class="stats" aria-label={t('stats.label')}>
       {items.map((it) => (

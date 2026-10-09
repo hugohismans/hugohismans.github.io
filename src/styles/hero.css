@@ -63,6 +63,8 @@
   .about__text { padding: clamp(24px, 4vw, 52px); }
   .about__text p:not(.kicker) { color: var(--ink-2); max-width: 36rem; margin: 0 0 1em; }
   .about__text p:last-child { margin-bottom: 0; }
+  .about__text .about__contact { color: var(--ink); }
+  .about__contact a { color: var(--accent); text-underline-offset: 4px; overflow-wrap: anywhere; }
   .about__text .h2 { margin-bottom: .45em; }
   .stats { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: clamp(10px, 1.6vw, 18px); margin: 0; padding: 0; list-style: none; }
   .stat { display: flex; flex-direction: column; justify-content: end; gap: 6px; padding: clamp(18px, 2.4vw, 28px); border-radius: 22px; border: 1px solid var(--line); background: rgba(7, 8, 19, .7); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); min-height: 150px; position: relative; overflow: hidden; }

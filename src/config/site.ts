@@ -11,6 +11,7 @@ export const SITE = {
   url: 'https://hugohismans.github.io',
   author: 'Hugo Hismans',
   githubUser: 'hugohismans',
+  email: 'hugo.hismans@gmail.com',
   /** Branche par défaut des dépôts, si `depot.branche` n'est pas précisé. */
   defaultBranch: 'main',
   themeColor: '#04050b',

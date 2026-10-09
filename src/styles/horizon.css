@@ -6,6 +6,8 @@
   .horizon__title { margin: 0 0 .35em; font: 300 clamp(3rem, 9vw, 8rem)/.9 var(--f-display); font-variation-settings: "opsz" 144, "SOFT" 60; letter-spacing: -.03em; }
   .horizon__title em { font-style: italic; color: transparent; background: linear-gradient(100deg, #ffe3c2, #ff9d4d 55%, #ff7aa2); -webkit-background-clip: text; background-clip: text; padding-right: .08em; }
   .horizon__text { margin: 0 0 32px; max-width: 34rem; color: var(--ink-2); font-size: 1.1rem; }
+  .horizon__contact { margin: 28px 0 0; color: var(--ink-2); font-size: 1rem; }
+  .horizon__contact a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 4px; overflow-wrap: anywhere; }
   .horizon__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
   .horizon__small { margin: 64px 0 0; max-width: 46rem; padding: 14px 18px; border-radius: 14px; background: rgba(4, 5, 11, .78); border: 1px solid var(--line); font: 500 .72rem/1.8 var(--f-mono); letter-spacing: .04em; color: var(--ink-2); }
   @media (max-width: 760px) { .horizon__small { font-size: .75rem; } }
