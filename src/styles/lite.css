@@ -1,0 +1,35 @@
+/* ============================================================ appareils tactiles et écrans étroits
+   Mesures de sûreté pour WebKit iOS : pas de grand calque animé, pas de pile
+   de backdrop-filter plein écran, des flous courts, peu de calques composités. */
+@layer lite {
+  @media (hover: none), (pointer: coarse), (max-width: 760px) {
+    .grain { display: none; }
+    /* panneaux opaques au lieu de flous d'arrière-plan */
+    .panel, .stat, .station__text, .btn, .horizon__small, .fiche__close, .top.is-scrolled {
+      backdrop-filter: none; -webkit-backdrop-filter: none;
+    }
+    .panel { background: rgba(7, 8, 19, .93); }
+    .stat { background: rgba(7, 8, 19, .9); }
+    body:not(.paper) .btn:not(.btn--primary) { background: rgba(9, 10, 22, .9); }
+    body:not(.paper) .top.is-scrolled { background: rgba(4, 5, 11, .96); }
+    dialog.fiche::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(2, 3, 9, .9); }
+    /* ombres géantes adoucies */
+    .scope__frame { box-shadow: 0 20px 40px -24px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .1); }
+    .sky__bh { box-shadow: 0 0 50px 8px rgba(255, 130, 60, .16); }
+    .card__in, .card:hover .card__in, .card:focus-within .card__in { box-shadow: none; transform: none; transition: border-color .3s; }
+    .card__in::after { display: none; }
+    .card__shot img, .card:hover .card__shot img { transform: none; filter: none; transition: none; }
+    .fiche__panel { box-shadow: none; }
+    .browser { box-shadow: 0 20px 40px -24px rgba(0, 0, 0, .9); }
+    .phone { box-shadow: -12px 18px 36px -18px rgba(0, 0, 0, .9); }
+    .progress { box-shadow: none; }
+    /* entrées de cartes pilotées par le défilement : désactivées (un calque par carte sinon) */
+    html[data-motion="full"] .card { animation: none; }
+    html.no-sda[data-motion="full"] .card { opacity: 1; transform: none; transition: none; }
+    /* lettres du titre : entrée sans flou */
+    @keyframes ch-in { from { opacity: 0; transform: translateY(.4em); } }
+    .hero__lede, .hero__foot, .hero__kicker, .sec-head__lede, .sec-head .kicker, .horizon__text, .horizon .kicker, .atlas__legend {
+      text-shadow: 0 0 2px rgba(4, 5, 11, .9), 0 0 10px rgba(4, 5, 11, .8);
+    }
+  }
+}

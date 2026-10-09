@@ -1,0 +1,24 @@
+---
+/** Décor du ciel : secours CSS (toujours présent), toile WebGL et étiquettes ancrées dans la 3D. */
+import { useT, type Lang } from '../i18n/ui';
+import { activeCategories, loc } from '../lib/catalogue';
+
+interface Props { lang: Lang; scene?: boolean }
+const { lang, scene = true } = Astro.props;
+const t = useT(lang);
+// L'anneau de texte autour de Sgr A* liste les amas, depuis les données.
+const ring = [...activeCategories.map((c) => loc(c.label, lang)), 'Sgr A*'].join(' ✦ ') + ' ✦ ';
+---
+<div class="sky" aria-hidden="true"><div class="sky__stars"></div><div class="sky__bh"><span class="sky__disk"></span></div></div>
+{scene && (
+  <>
+    <canvas id="cosmos" aria-hidden="true"></canvas>
+    <div class="overlay3d" aria-hidden="true">
+      <div class="orbit-ring"><svg viewBox="0 0 100 100"><defs><path id="orb" d="M50,50 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs><circle cx="50" cy="50" r="43"/><text><textPath href="#orb">{ring}</textPath></text></svg></div>
+      <div class="here-label">{t('here')}</div>
+    </div>
+    <div class="star-tip" aria-hidden="true"></div>
+  </>
+)}
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"></div>

@@ -1,0 +1,26 @@
+---
+import { useT, type Lang } from '../i18n/ui';
+import { typo } from '../lib/typo';
+import { stats, bySlug } from '../lib/catalogue';
+import { HORIZON_PROJECT, SITE } from '../config/site';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const T = (k: Parameters<typeof t>[0], v: Record<string, string | number> = {}) => typo(t(k, v), lang);
+const bh = bySlug.get(HORIZON_PROJECT);
+const sep = lang === 'fr' ? ' : ' : ': ';
+---
+<footer class="horizon" id="horizon" aria-labelledby="horizon-title">
+  <div class="horizon__inner">
+    <p class="kicker"><span>{t('horizon.kicker.arrival')}</span><span>Sagittarius A*</span><span>{t('horizon.kicker.coords')}</span></p>
+    <h2 class="horizon__title" id="horizon-title" set:html={t('horizon.title')} />
+    <p class="horizon__text">{T('horizon.text', { n: stats.projects })}</p>
+    <div class="horizon__actions">
+      <a class="btn btn--primary" href="#top">{t('horizon.top')}<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M8 14V2M3 7l5-5 5 5"/></svg></a>
+      {bh?.liens.live && <a class="btn btn--ghost" href={bh.liens.live} target="_blank" rel="noopener">{t('horizon.bh')}<span class="sr-only">{sep + bh.titre + t('newTab')}</span></a>}
+      <a class="btn btn--ghost" href={`https://github.com/${SITE.githubUser}`} target="_blank" rel="noopener">{t('horizon.github')}<span class="sr-only">{t('horizon.githubSr')}</span></a>
+    </div>
+    <p class="horizon__small">{T('horizon.small', { y: new Date().getFullYear() })}</p>
+  </div>
+</footer>

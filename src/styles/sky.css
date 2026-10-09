@@ -1,0 +1,93 @@
+/* ============================================================ ciel : secours CSS + toile WebGL + étiquettes 3D */
+@layer sections {
+  .sky {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    background:
+      radial-gradient(ellipse 38% 30% at 66% 46%, rgba(255, 150, 80, .22), transparent 70%),
+      radial-gradient(ellipse 90% 70% at 66% 46%, #171331 0%, #0a0a1b 45%, var(--bg) 78%);
+    transition: opacity 1.6s ease;
+  }
+  /* 150 étoiles en une seule ombre portée : un seul petit calque */
+  .sky__stars {
+    position: absolute; left: 0; top: 0; width: 1.5px; height: 1.5px; border-radius: 50%;
+    box-shadow: 32.4vw 15.1vh 0 0px rgba(255,255,255,0.67),36.6vw 5.8vh 0 0px rgba(255,255,255,0.58),43.4vw 7.0vh 0 0px rgba(255,214,170,0.31),82.7vw 12.4vh 0 0px rgba(190,210,255,0.40),57.7vw 39.7vh 0 0px rgba(255,255,255,0.88),29.0vw 14.4vh 0 0px rgba(255,214,170,0.33),10.3vw 57.1vh 0 0px rgba(255,255,255,0.37),56.4vw 61.9vh 0 0.5px rgba(190,210,255,0.57),77.7vw 46.6vh 0 0px rgba(255,214,170,0.85),24.8vw 18.0vh 0 0px rgba(255,255,255,0.76),52.5vw 87.5vh 0 0px rgba(255,214,170,0.72),11.8vw 41.8vh 0 0.5px rgba(255,255,255,0.74),42.2vw 96.2vh 0 0px rgba(190,210,255,0.30),34.0vw 35.0vh 0 0px rgba(255,214,170,0.57),84.0vw 94.5vh 0 0px rgba(190,210,255,0.56),6.1vw 70.1vh 0 0.5px rgba(190,210,255,0.67),28.5vw 38.6vh 0 0.5px rgba(255,255,255,0.68),35.5vw 61.1vh 0 0px rgba(255,255,255,0.57),12.9vw 24.8vh 0 0px rgba(255,214,170,0.50),16.6vw 40.2vh 0 0.5px rgba(255,255,255,0.43),86.4vw 27.8vh 0 0.5px rgba(255,214,170,0.52),95.8vw 15.1vh 0 0px rgba(255,255,255,0.36),1.2vw 83.1vh 0 0px rgba(255,214,170,0.37),14.6vw 53.5vh 0 0px rgba(255,214,170,0.65),69.0vw 51.5vh 0 0px rgba(190,210,255,0.65),45.7vw 87.1vh 0 0.5px rgba(190,210,255,0.87),39.8vw 39.4vh 0 0px rgba(255,214,170,0.56),19.1vw 98.5vh 0 0px rgba(255,255,255,0.54),60.1vw 10.2vh 0 0px rgba(190,210,255,0.62),94.9vw 61.4vh 0 0.5px rgba(255,255,255,0.30),14.9vw 25.2vh 0 0.5px rgba(255,214,170,0.48),12.3vw 84.9vh 0 0.5px rgba(255,214,170,0.90),48.4vw 8.6vh 0 0px rgba(255,214,170,0.32),47.9vw 69.2vh 0 0px rgba(255,255,255,0.59),14.7vw 54.3vh 0 0px rgba(190,210,255,0.27),97.9vw 86.3vh 0 0px rgba(255,214,170,0.70),90.8vw 35.6vh 0 0px rgba(190,210,255,0.39),63.6vw 61.3vh 0 0px rgba(255,255,255,0.76),81.8vw 74.0vh 0 0.5px rgba(190,210,255,0.40),35.6vw 2.9vh 0 0.5px rgba(255,214,170,0.27),25.9vw 69.3vh 0 0px rgba(255,214,170,0.87),95.5vw 36.5vh 0 0.5px rgba(255,255,255,0.39),19.7vw 20.4vh 0 0px rgba(190,210,255,0.66),47.9vw 65.3vh 0 0px rgba(255,255,255,0.77),91.0vw 78.2vh 0 0px rgba(255,214,170,0.74),43.4vw 63.6vh 0 0.5px rgba(190,210,255,0.31),46.3vw 74.3vh 0 0px rgba(255,255,255,0.31),99.3vw 2.8vh 0 0px rgba(255,214,170,0.63),61.2vw 59.6vh 0 0px rgba(255,214,170,0.56),54.9vw 13.1vh 0 0px rgba(190,210,255,0.26),52.7vw 93.4vh 0 0px rgba(255,255,255,0.53),2.8vw 21.3vh 0 0px rgba(190,210,255,0.58),25.9vw 41.9vh 0 0px rgba(190,210,255,0.34),89.8vw 66.2vh 0 0.5px rgba(190,210,255,0.78),82.7vw 87.8vh 0 0px rgba(255,255,255,0.33),87.3vw 77.7vh 0 0px rgba(255,255,255,0.65),14.2vw 61.9vh 0 0px rgba(255,255,255,0.33),68.2vw 53.1vh 0 0px rgba(255,255,255,0.56),24.8vw 27.7vh 0 0.5px rgba(190,210,255,0.75),56.2vw 76.0vh 0 0px rgba(255,214,170,0.84),61.3vw 50.6vh 0 0px rgba(190,210,255,0.58),45.2vw 53.3vh 0 0px rgba(255,255,255,0.56),92.3vw 89.3vh 0 0px rgba(255,214,170,0.38),41.7vw 39.2vh 0 0px rgba(190,210,255,0.46),42.8vw 21.3vh 0 0px rgba(255,255,255,0.45),94.0vw 64.3vh 0 0px rgba(255,214,170,0.49),96.8vw 22.0vh 0 0.5px rgba(255,214,170,0.87),16.3vw 66.8vh 0 0.5px rgba(190,210,255,0.40),99.4vw 40.4vh 0 0px rgba(255,214,170,0.52),9.2vw 36.6vh 0 0.5px rgba(255,214,170,0.47),70.3vw 38.4vh 0 0px rgba(255,214,170,0.59),11.3vw 91.9vh 0 0px rgba(255,255,255,0.40),26.6vw 4.0vh 0 0px rgba(255,214,170,0.76),82.0vw 85.0vh 0 0.5px rgba(255,214,170,0.69),14.9vw 91.9vh 0 0px rgba(190,210,255,0.62),8.9vw 5.8vh 0 0px rgba(255,214,170,0.70),26.9vw 1.7vh 0 0px rgba(255,214,170,0.31),60.8vw 22.2vh 0 0.5px rgba(255,255,255,0.42),1.2vw 99.4vh 0 0px rgba(255,214,170,0.52),4.3vw 71.0vh 0 0px rgba(255,255,255,0.86),5.0vw 20.2vh 0 0px rgba(255,214,170,0.45),29.0vw 50.0vh 0 0px rgba(255,214,170,0.37),99.4vw 3.7vh 0 0px rgba(190,210,255,0.26),51.4vw 24.6vh 0 0.5px rgba(190,210,255,0.54),65.7vw 54.6vh 0 0px rgba(190,210,255,0.83),68.8vw 98.2vh 0 0px rgba(190,210,255,0.47),40.5vw 34.8vh 0 0px rgba(255,255,255,0.29),7.1vw 74.1vh 0 0px rgba(255,255,255,0.42),8.4vw 84.1vh 0 0px rgba(190,210,255,0.82),59.9vw 69.3vh 0 0px rgba(255,255,255,0.28),26.9vw 0.4vh 0 0px rgba(255,214,170,0.49),24.4vw 96.6vh 0 0px rgba(255,214,170,0.45),0.1vw 38.2vh 0 0px rgba(190,210,255,0.56),24.8vw 77.6vh 0 0px rgba(255,255,255,0.31),40.0vw 4.2vh 0 0px rgba(255,214,170,0.26),8.4vw 95.8vh 0 0.5px rgba(255,255,255,0.80),76.4vw 72.1vh 0 0px rgba(255,214,170,0.57),4.4vw 83.5vh 0 0.5px rgba(190,210,255,0.83),73.4vw 81.2vh 0 0px rgba(190,210,255,0.34),82.6vw 58.4vh 0 0px rgba(190,210,255,0.83),8.5vw 4.2vh 0 0.5px rgba(255,255,255,0.66),83.6vw 55.9vh 0 0px rgba(190,210,255,0.66),48.9vw 0.3vh 0 0px rgba(190,210,255,0.77),65.9vw 6.6vh 0 0px rgba(255,214,170,0.73),84.6vw 23.5vh 0 0.5px rgba(255,255,255,0.74),49.4vw 38.3vh 0 0px rgba(190,210,255,0.56),76.7vw 61.7vh 0 0px rgba(255,255,255,0.67),33.2vw 65.2vh 0 0px rgba(190,210,255,0.70),1.2vw 6.1vh 0 0px rgba(190,210,255,0.42),69.2vw 67.6vh 0 0px rgba(190,210,255,0.44),46.5vw 46.6vh 0 0px rgba(190,210,255,0.33),31.2vw 8.6vh 0 0.5px rgba(255,214,170,0.56),7.6vw 50.7vh 0 0.5px rgba(255,214,170,0.90),21.0vw 94.6vh 0 0px rgba(190,210,255,0.39),14.2vw 52.4vh 0 0px rgba(255,255,255,0.87),88.7vw 70.3vh 0 0.5px rgba(255,214,170,0.40),2.5vw 0.4vh 0 0.5px rgba(255,214,170,0.57),30.2vw 14.1vh 0 0px rgba(255,214,170,0.47),84.0vw 0.2vh 0 0px rgba(255,214,170,0.74),94.0vw 19.6vh 0 0px rgba(190,210,255,0.26),25.3vw 6.5vh 0 0px rgba(190,210,255,0.50),36.1vw 42.8vh 0 0px rgba(255,255,255,0.43),10.2vw 83.5vh 0 0px rgba(255,255,255,0.44),97.1vw 43.6vh 0 0.5px rgba(255,214,170,0.46),88.4vw 81.2vh 0 0px rgba(190,210,255,0.66),72.0vw 4.9vh 0 0px rgba(255,214,170,0.73),64.4vw 28.6vh 0 0px rgba(190,210,255,0.28),17.1vw 41.5vh 0 0px rgba(255,214,170,0.43),40.6vw 23.9vh 0 0.5px rgba(190,210,255,0.56),12.0vw 64.3vh 0 0.5px rgba(190,210,255,0.30),55.0vw 45.3vh 0 0.5px rgba(255,214,170,0.47),14.0vw 19.2vh 0 0px rgba(255,214,170,0.31),31.9vw 36.8vh 0 0px rgba(255,255,255,0.78),75.0vw 41.3vh 0 0px rgba(190,210,255,0.52),37.7vw 33.8vh 0 0px rgba(255,214,170,0.29),12.6vw 50.3vh 0 0px rgba(255,255,255,0.66),27.1vw 24.8vh 0 0.5px rgba(255,214,170,0.51),95.4vw 84.9vh 0 0px rgba(255,255,255,0.82),3.2vw 71.0vh 0 0.5px rgba(255,214,170,0.83),0.0vw 39.2vh 0 0.5px rgba(190,210,255,0.85),97.2vw 24.8vh 0 0px rgba(255,255,255,0.32),52.2vw 68.2vh 0 0.5px rgba(190,210,255,0.86),8.5vw 77.7vh 0 0px rgba(255,255,255,0.25),56.9vw 3.8vh 0 0px rgba(255,255,255,0.71),52.8vw 43.7vh 0 0px rgba(255,255,255,0.75),30.0vw 94.4vh 0 0px rgba(255,214,170,0.37),79.0vw 0.1vh 0 0px rgba(255,214,170,0.60),95.9vw 64.5vh 0 0px rgba(255,214,170,0.82),54.7vw 2.9vh 0 0px rgba(190,210,255,0.52),5.5vw 19.4vh 0 0.5px rgba(190,210,255,0.83),8.1vw 22.8vh 0 0px rgba(255,214,170,0.53),49.3vw 69.6vh 0 0.5px rgba(255,214,170,0.72),19.8vw 79.7vh 0 0px rgba(190,210,255,0.73),20.5vw 97.0vh 0 0px rgba(255,255,255,0.45),46.5vw 26.5vh 0 0.5px rgba(255,255,255,0.83),61.0vw 89.6vh 0 0px rgba(190,210,255,0.57),94.9vw 14.6vh 0 0px rgba(255,255,255,0.51),97.4vw 14.2vh 0 0px rgba(255,255,255,0.28),39.3vw 89.8vh 0 0px rgba(190,210,255,0.82),99.8vw 93.2vh 0 0.5px rgba(255,255,255,0.46);
+  }
+  .sky__bh {
+    position: absolute; left: 66%; top: 46%; width: min(30vmin, 260px); aspect-ratio: 1;
+    translate: -50% -50%; border-radius: 50%;
+    background: radial-gradient(circle, #000 0 50%, #ffe2b8 53%, rgba(255, 150, 70, .65) 57%, rgba(255, 110, 50, .12) 66%, transparent 71%);
+    box-shadow: 0 0 120px 20px rgba(255, 130, 60, .18);
+  }
+  .sky__disk {
+    position: absolute; left: 50%; top: 50%; width: 260%; height: 34%; translate: -50% -50%; rotate: -10deg;
+    border-radius: 50%;
+    background: radial-gradient(ellipse closest-side, transparent 38%, rgba(255, 196, 130, .85) 42%, rgba(255, 130, 60, .35) 62%, transparent 100%);
+    mask: radial-gradient(ellipse 22% 60% at 50% 30%, transparent 98%, #000 100%);
+    -webkit-mask: radial-gradient(ellipse 22% 60% at 50% 30%, transparent 98%, #000 100%);
+  }
+  @media (max-width: 760px) {
+    .sky__bh { left: 50%; top: 24%; width: min(46vw, 200px); box-shadow: 0 0 60px 10px rgba(255, 130, 60, .18); }
+    .sky { background: radial-gradient(ellipse 60% 30% at 50% 24%, rgba(255, 150, 80, .2), transparent 70%), radial-gradient(ellipse 120% 70% at 50% 24%, #171331 0%, #0a0a1b 45%, var(--bg) 78%); }
+  }
+  #cosmos {
+    position: fixed; left: 0; top: 0; width: 100%; height: 100%; display: block; z-index: 0;
+    opacity: 0; transition: opacity 1.4s ease; pointer-events: none;
+  }
+  /* toile mobile à la hauteur du « grand » viewport : pas de réallocation quand la barre d'adresse bouge */
+  @media (hover: none), (pointer: coarse), (max-width: 760px) { #cosmos { height: 100vh; height: 100lvh; } }
+  html.gl-on #cosmos { opacity: 1; }
+  html.gl-on .sky { opacity: 0; }
+  html.gl-on .sky__bh { opacity: 0; transition: opacity .35s ease; }
+
+  /* halo sombre sous le texte posé directement sur la scène */
+  .hero__lede, .hero__foot, .hero__kicker, .sec-head__lede, .sec-head .kicker, .horizon__text, .horizon .kicker, .atlas__legend {
+    text-shadow: 0 0 2px rgba(4, 5, 11, .9), 0 0 14px rgba(4, 5, 11, .85), 0 0 28px rgba(4, 5, 11, .6);
+  }
+
+  .overlay3d { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+  .overlay3d > * { position: absolute; left: 0; top: 0; }
+  html:not(.gl-on) .overlay3d { display: none; }
+  html.gl-on .overlay3d > * { will-change: transform, opacity; }
+  .orbit-ring { width: 200px; height: 200px; margin: -100px 0 0 -100px; opacity: 0; transition: opacity .8s; }
+  .orbit-ring svg { width: 100%; height: 100%; overflow: visible; }
+  html[data-motion="full"] .orbit-ring svg { animation: spin-slow 70s linear infinite; }
+  .orbit-ring text { font: 600 4.1px var(--f-mono); letter-spacing: 1.55px; fill: rgba(255, 214, 170, .85); text-transform: uppercase; }
+  .orbit-ring circle { fill: none; stroke: rgba(255, 214, 170, .28); stroke-width: .25; stroke-dasharray: .5 1.5; }
+  @keyframes spin-slow { to { transform: rotate(360deg); } }
+  .cl-label {
+    font: italic 400 clamp(.85rem, 1.1vw, 1.05rem)/1 var(--f-display); letter-spacing: .02em; color: var(--c, #fff);
+    white-space: nowrap; translate: 12px -50%; opacity: 0; text-shadow: 0 0 18px rgba(4, 5, 11, .9), 0 0 4px rgba(4, 5, 11, .9);
+  }
+  .cl-label.is-flip { translate: calc(-100% - 12px) -50%; text-align: right; }
+  .cl-label small { display: block; font: 500 .62rem/1.6 var(--f-mono); letter-spacing: .14em; color: var(--ink-3); font-style: normal; text-transform: uppercase; }
+  .here-label { font: 500 .66rem/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: #ffe3a3; white-space: nowrap; opacity: 0; }
+  .here-label::before { content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 8px; vertical-align: -1px; border: 1.5px solid #ffe3a3; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--bg), inset 0 0 0 4px #ffe3a3; }
+  .star-tip {
+    position: fixed; left: 0; top: 0; z-index: 75; pointer-events: none;
+    padding: 8px 12px 9px; border-radius: 12px; background: rgba(8, 9, 20, .92); border: 1px solid var(--line-2);
+    font: 600 .9rem/1.25 var(--f-text); color: var(--ink); white-space: nowrap; opacity: 0; transition: opacity .2s;
+  }
+  .star-tip small { display: block; font: 500 .66rem/1.5 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--c, var(--ink-3)); }
+  .star-tip.is-on { opacity: 1; }
+
+  /* grain argentique : calque à peine plus grand que l'écran (pas 200 %), coupé sur mobile */
+  .grain {
+    position: fixed; inset: -50px; z-index: 90; pointer-events: none; opacity: .055;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode: overlay;
+  }
+  html[data-motion="full"] .grain { animation: grain 1.2s steps(6) infinite; }
+  html.is-idle .grain { animation-play-state: paused; }
+  @keyframes grain {
+    0% { transform: translate(0, 0); } 20% { transform: translate(-43px, 31px); } 40% { transform: translate(29px, -47px); }
+    60% { transform: translate(-31px, -13px); } 80% { transform: translate(47px, 41px); } 100% { transform: translate(0, 0); }
+  }
+
+  /* barre de progression : animation pilotée par le défilement (CSS pur) */
+  .progress { position: fixed; left: 0; top: 0; height: 2px; width: 100%; z-index: 80; pointer-events: none; transform-origin: 0 50%; transform: scaleX(0);
+    background: linear-gradient(90deg, #7cc8ff, #b79cff 40%, #ff9d4d 80%, #ffe3a3); box-shadow: 0 0 12px rgba(255, 157, 77, .6); }
+  @supports (animation-timeline: scroll()) {
+    .progress { animation: progress linear both; animation-timeline: scroll(root block); }
+    @keyframes progress { to { transform: scaleX(1); } }
+  }
+}

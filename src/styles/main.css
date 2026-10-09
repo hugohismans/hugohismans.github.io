@@ -1,0 +1,14 @@
+/* Point d'entrée des styles. L'ordre des couches est déclaré dans tokens.css :
+   tokens < base < components < sections < effects < lite < calm */
+@import './tokens.css';
+@import './base.css';
+@import './components.css';
+@import './header.css';
+@import './sky.css';
+@import './hero.css';
+@import './phares.css';
+@import './atlas.css';
+@import './fiche.css';
+@import './horizon.css';
+@import './lite.css';
+@import './calm.css';

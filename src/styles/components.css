@@ -1,0 +1,40 @@
+/* ============================================================ composants */
+@layer components {
+  main, .horizon { position: relative; z-index: 2; }
+  .kicker {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin: 0 0 18px;
+    font: 500 .72rem/1.4 var(--f-mono); letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .kicker > span + span::before { content: ""; display: inline-block; width: 14px; height: 1px; background: currentColor; opacity: .5; vertical-align: .3em; margin-right: 14px; }
+  .h2 {
+    margin: 0; font: 300 clamp(2.5rem, 6.4vw, 5.6rem)/.95 var(--f-display);
+    font-variation-settings: "opsz" 144, "SOFT" 40; letter-spacing: -.02em;
+  }
+  .h2 em { font-style: italic; font-weight: 400; color: transparent; background: linear-gradient(100deg, #ffe3c2, #ff9d4d 60%, #ff7aa2); -webkit-background-clip: text; background-clip: text; padding-right: .08em; }
+  .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--cat, var(--accent)); box-shadow: 0 0 10px var(--cat, var(--accent)); margin-right: 8px; vertical-align: .08em; }
+  .panel {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 24px;
+    backdrop-filter: blur(18px) saturate(130%); -webkit-backdrop-filter: blur(18px) saturate(130%);
+  }
+  .btn {
+    --mx: 0px; --my: 0px;
+    position: relative; display: inline-flex; align-items: center; justify-content: center; gap: .55em;
+    min-height: 48px; padding: 0 1.35em; border-radius: 999px; cursor: pointer;
+    font: 600 .95rem/1 var(--f-text); letter-spacing: .01em; text-decoration: none; white-space: nowrap;
+    color: var(--ink); background: rgba(9, 10, 22, .6); border: 1px solid var(--line-2);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    transform: translate(var(--mx), var(--my));
+    transition: transform .45s var(--ease-out), background-color .25s, border-color .25s, box-shadow .35s;
+  }
+  .btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .btn:hover { border-color: rgba(255, 255, 255, .42); background: rgba(20, 22, 42, .75); }
+  .btn--primary {
+    color: #1d0e03; border-color: transparent;
+    background: linear-gradient(135deg, #ffd3a8 0%, #ffab66 45%, #ff8a3d 100%);
+    box-shadow: 0 0 0 1px rgba(255, 190, 130, .4), 0 12px 40px -12px rgba(255, 130, 50, .8);
+  }
+  .btn--primary:hover { background: linear-gradient(135deg, #ffe2c4 0%, #ffb877 45%, #ff9550 100%); box-shadow: 0 0 0 1px rgba(255, 210, 160, .6), 0 16px 50px -10px rgba(255, 140, 60, .95); }
+  .btn--ghost { color: var(--ink); }
+  .tech-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .tech-list li { font: 500 .74rem/1 var(--f-mono); letter-spacing: .02em; color: var(--ink-2); padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line); background: rgba(255, 255, 255, .03); }
+}

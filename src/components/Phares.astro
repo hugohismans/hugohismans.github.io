@@ -1,0 +1,57 @@
+---
+import { Picture } from 'astro:assets';
+import { useT, ROUTES, type Lang } from '../i18n/ui';
+import { typo } from '../lib/typo';
+import { phares, catById, loc, hhCode, skyCoords, fallbackLang } from '../lib/catalogue';
+import { desktopShot, SHOT_WIDTHS } from '../lib/images';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const total = phares.length;
+const sep = lang === 'fr' ? '\u202f: ' : ': ';
+const pad = (i: number) => String(i).padStart(2, '0');
+const ext = '<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M5 3h8v8M13 3 3 13"/></svg>';
+---
+<section class="phares" id="phares" aria-labelledby="phares-title">
+  <header class="sec-head">
+    <p class="kicker"><span>{t('phares.kicker.num')}</span><span>{t('phares.kicker.stops', { n: total })}</span></p>
+    <h2 class="h2" id="phares-title" set:html={t('phares.title')} />
+    <p class="sec-head__lede">{typo(t('phares.lede'), lang)}</p>
+  </header>
+  <div class="stations" role="region" aria-label={t('phares.carousel')} tabindex="-1">
+    {phares.map((p, i) => {
+      const c = catById.get(p.categorie)!;
+      const side = i % 2 === 0 ? 'right' : 'left';
+      const why = loc(p.mise_en_avant.pourquoi, lang);
+      return (
+        <article class={`station station--${side}`} id={`phare-${p.slug}`} data-slug={p.slug} data-station={i} style={`--cat:${c.couleur}`} aria-labelledby={`st-${i}`}>
+          <span class="station__num" aria-hidden="true">{pad(i + 1)}</span>
+          <figure class="scope">
+            <a class="scope__frame" href={ROUTES.project(p.slug, lang)} data-open={p.slug} tabindex="-1" aria-hidden="true">
+              <Picture src={desktopShot(p.slug)} alt="" widths={SHOT_WIDTHS} sizes="(max-width: 900px) 86vw, 58vw" formats={['avif']} fallbackFormat="webp" loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+            </a>
+            <svg class="scope__reticle" aria-hidden="true" viewBox="0 0 160 100" preserveAspectRatio="none"><path d="M2 14V2h12M146 2h12v12M158 86v12h-12M14 98H2V86"/><path class="t" d="M80 2v5M80 93v5M2 50h4M154 50h4"/></svg>
+            <figcaption class="scope__cap" aria-hidden="true"><span>{hhCode(p.hh)} — {p.titre}</span><span>{skyCoords(p.slug, lang)}</span></figcaption>
+          </figure>
+          <div class="station__text">
+            <p class="kicker"><span class="station__count">{pad(i + 1)} / {pad(total)}</span><span class="station__cat"><span class="dot" aria-hidden="true"></span>{loc(c.label, lang)}</span><span>{t(`status.${p.statut}`)}</span></p>
+            <h3 class="station__title" id={`st-${i}`}>{p.titre}</h3>
+            <p class="station__tag" lang={fallbackLang(p.accroche, lang)}>{loc(p.accroche, lang)}</p>
+            {why && <p class="station__why" lang={fallbackLang(p.mise_en_avant.pourquoi, lang)}>{why}</p>}
+            <ul class="tech-list" aria-label={t('tech')}>{p.tech_courtes.slice(0, 4).map((x) => <li>{x}</li>)}</ul>
+            <div class="station__actions">
+              <a class="btn btn--primary" href={ROUTES.project(p.slug, lang)} data-open={p.slug}>{t('station.open')}<span class="sr-only">{sep + p.titre}</span></a>
+              {p.liens.live && <a class="btn btn--ghost" href={p.liens.live} target="_blank" rel="noopener"><Fragment set:html={t('station.launch') + ext} /><span class="sr-only">{` ${p.titre}${t('newTab')}`}</span></a>}
+            </div>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+  <div class="stations__ctl" aria-hidden="true">
+    <button type="button" data-car="-1" tabindex="-1"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg></button>
+    <span class="stations__pos">01 / {pad(total)}</span>
+    <button type="button" data-car="1" tabindex="-1"><svg viewBox="0 0 16 16"><path d="m6 3 5 5-5 5"/></svg></button>
+  </div>
+</section>

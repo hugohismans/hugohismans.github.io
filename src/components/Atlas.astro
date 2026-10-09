@@ -1,0 +1,67 @@
+---
+import { Picture } from 'astro:assets';
+import { useT, ROUTES, type Lang } from '../i18n/ui';
+import { typo, fold } from '../lib/typo';
+import { projects, activeCategories, catById, catLetter, catCount, loc, hhCode, year, stats, numberWord, rankOf, fallbackLang } from '../lib/catalogue';
+import { desktopShot } from '../lib/images';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const T = (k: Parameters<typeof t>[0], v: Record<string, string | number> = {}) => typo(t(k, v), lang);
+const ext = '<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M5 3h8v8M13 3 3 13"/></svg>';
+const N = numberWord(stats.clusters, lang);
+// Textes d'état lus par le script de l'atlas (aucun texte d'interface écrit en dur dans le JS).
+const msgs = {
+  one: T('atlas.status.one'), many: T('atlas.status.many'), all: T('atlas.status.all', { N }),
+  query: T('atlas.status.query'), cluster: T('atlas.status.cluster'),
+};
+const clusters = Object.fromEntries(activeCategories.map((c) => [c.id, { l: catLetter(c), c: loc(c.label, lang), i: loc(c.intro, lang) }]));
+---
+<section class="atlas" id="atlas" aria-labelledby="atlas-title" tabindex="-1">
+  <header class="sec-head">
+    <p class="kicker"><span>{t('atlas.kicker.num')}</span><span>{t('atlas.kicker.full')}</span></p>
+    <h2 class="h2" id="atlas-title" set:html={t('atlas.title', { n: stats.projects })} />
+    <p class="sec-head__lede">{T('atlas.lede', { N: numberWord(stats.clusters, lang, true) })}</p>
+  </header>
+  <div class="atlas__controls panel">
+    <div class="filters" role="group" aria-label={t('atlas.filters')}>
+      <button type="button" class="chip chip--all" data-filter="all" aria-pressed="true"><span class="chip__label">{t('atlas.all')}</span><span class="chip__n">{projects.length}</span></button>
+      {activeCategories.map((c) => (
+        <button type="button" class="chip" data-filter={c.id} aria-pressed="false" style={`--cat:${c.couleur}`}><span class="chip__star" aria-hidden="true"></span><span class="chip__label">{loc(c.label, lang)}</span><span class="chip__n">{catCount(c.id)}</span></button>
+      ))}
+    </div>
+    <div class="atlas__tools">
+      <label class="search"><span class="sr-only">{t('atlas.search')}</span><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5"/><path d="m11 11 3.5 3.5"/></svg><input type="search" id="q" placeholder={T('atlas.search.ph')} autocomplete="off" spellcheck="false" enterkeyhint="search"></label>
+      <label class="sort"><span>{t('atlas.sort')}</span> <select id="sort"><option value="eclat">{t('atlas.sort.eclat')}</option><option value="recent">{t('atlas.sort.recent')}</option><option value="az">{t('atlas.sort.az')}</option></select></label>
+    </div>
+    <p class="atlas__status" id="atlas-status" role="status" data-msgs={JSON.stringify(msgs)} data-clusters={JSON.stringify(clusters)}><strong>{T('atlas.status.many', { n: projects.length })}</strong> <span class="intro">{T('atlas.status.all', { N })}</span></p>
+  </div>
+  <ol class="grid" id="grid">
+    {projects.map((p, i) => {
+      const c = catById.get(p.categorie)!;
+      const title = p.titre;
+      const tag = loc(p.accroche, lang);
+      const hay = fold([title, tag, loc(c.label, lang), hhCode(p.hh), ...p.tech, ...p.tech_courtes, ...p.tags, lang === 'en' ? p.accroche.fr : ''].join(' '));
+      const href = ROUTES.project(p.slug, lang);
+      return (
+        <li class="card" data-slug={p.slug} data-cat={p.categorie} data-rank={rankOf.get(p.slug)} data-last={p.dernier_commit} data-title={fold(title)} data-hay={hay} style={`--cat:${c.couleur};--vtn:c${i}`}>
+          <article class="card__in">
+            <div class="card__shot"><Picture src={desktopShot(p.slug)} alt="" widths={[480, 960]} sizes="(max-width: 640px) 92vw, (max-width: 1000px) 46vw, 31vw" formats={['avif']} fallbackFormat="webp" loading="lazy" decoding="async" /></div>
+            <div class="card__body">
+              <p class="card__meta"><span class="card__id">{hhCode(p.hh)}</span><span class="card__cat"><span class="dot" aria-hidden="true"></span>{loc(c.label, lang)}</span></p>
+              <h3 class="card__title"><a class="card__open" href={href} data-open={p.slug}>{title}</a></h3>
+              <p class="card__tag" lang={fallbackLang(p.accroche, lang)}>{tag}</p>
+              <ul class="card__tech" aria-label={t('tech')}>{p.tech_courtes.slice(0, 3).map((x) => <li>{x}</li>)}</ul>
+              <p class="card__foot"><span class="card__status">{t(`status.${p.statut}`)} · {year(p.dernier_commit)}</span>{p.liens.live
+                ? <a class="card__live" href={p.liens.live} target="_blank" rel="noopener"><span>{t('card.launch')}</span><Fragment set:html={ext} /><span class="sr-only">{` ${title}${t('newTab')}`}</span></a>
+                : <span class="card__live card__live--none">{t('card.offline')}</span>}</p>
+            </div>
+          </article>
+        </li>
+      );
+    })}
+  </ol>
+  <p class="atlas__empty" hidden>{T('atlas.empty')}</p>
+  <p class="atlas__legend">{T('atlas.legend', { max: String(stats.maxHH).padStart(3, '0') })}</p>
+</section>

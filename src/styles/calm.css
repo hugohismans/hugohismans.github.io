@@ -1,0 +1,19 @@
+/* ============================================================ mode calme, couleurs forcées, impression */
+@layer calm {
+  html[data-motion="reduce"] *, html[data-motion="reduce"] *::before, html[data-motion="reduce"] *::after {
+    animation-duration: .001ms !important; animation-iteration-count: 1 !important; animation-delay: 0s !important;
+    transition-duration: .001ms !important; scroll-behavior: auto !important;
+  }
+  html[data-motion="reduce"] .grain { animation: none !important; }
+  html[data-motion="reduce"] .card__in { transform: none !important; }
+  html[data-motion="reduce"] .btn { transform: none !important; }
+  @media (forced-colors: active) {
+    .hero__line, .hero__line .ch, .h2 em, .horizon__title em { color: CanvasText; background: none; }
+    .btn, .chip, .card__in { border: 1px solid CanvasText; }
+    .grain, .sky, #cosmos, .overlay3d { display: none; }
+  }
+  @media print {
+    #cosmos, .sky, .overlay3d, .grain, .progress, .top, .star-tip, .stations__ctl, .atlas__controls { display: none !important; }
+    body { background: #fff; color: #000; }
+  }
+}

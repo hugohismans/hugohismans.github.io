@@ -1,0 +1,87 @@
+---
+/**
+ * Fiche d'un projet. Rendue sur sa propre page, et reprise telle quelle
+ * dans la modale de l'accueil (chargée puis extraite par le script fiche.ts).
+ */
+import { Picture } from 'astro:assets';
+import { useT, ROUTES, otherLang, type Lang } from '../i18n/ui';
+import { typo } from '../lib/typo';
+import { catById, loc, locList, fallbackLang, hhCode, dateRange, fmtNumber, sourceUrl, relatedOf, versionsOf, neighbours, repoUrl, type Project } from '../lib/catalogue';
+import { desktopShot, mobileShot, SHOT_WIDTHS, MOBILE_WIDTHS } from '../lib/images';
+
+interface Props { p: Project; lang: Lang }
+const { p, lang } = Astro.props;
+const t = useT(lang);
+const T = (k: Parameters<typeof t>[0], v: Record<string, string | number> = {}) => typo(t(k, v), lang);
+const c = catById.get(p.categorie)!;
+const shot = desktopShot(p.slug);
+const mob = mobileShot(p.slug, p.visuel.mobile);
+const landscape = mob ? mob.width > mob.height : false;
+const live = p.liens.live;
+const src = sourceUrl(p);
+const wow = locList(p.points_forts, lang).slice(0, 5);
+const hint = loc(p.mode_emploi, lang);
+const related = relatedOf(p);
+const versions = versionsOf(p);
+const { prev, next, index, total } = neighbours(p);
+const pad = (i: number) => String(i).padStart(2, '0');
+const host = live ? live.replace(/^https?:\/\//, '').replace(/\/$/, '') : t('fiche.notOnline');
+const ext = '<svg aria-hidden="true" viewBox="0 0 16 16"><path d="M5 3h8v8M13 3 3 13"/></svg>';
+const commits = t(p.commits > 1 ? 'fiche.commit.many' : 'fiche.commit.one', { n: fmtNumber(p.commits, lang) });
+---
+<article class="sheet" style={`--cat:${c.couleur}`} data-slug={p.slug} data-cat={p.categorie} data-alt={ROUTES.project(p.slug, otherLang(lang))} aria-labelledby="sheet-title">
+  <p class="sheet__back"><a href={`${ROUTES.home[lang]}#atlas`}><span aria-hidden="true">←</span> {t('fiche.back')}</a></p>
+  <div class="sheet__media">
+    <div class="browser">
+      <div class="browser__bar" aria-hidden="true"><i></i><i></i><i></i><span class="browser__url">{host}</span></div>
+      <Picture class="sheet__shot" src={shot} alt={t('fiche.shotDesktop', { t: p.titre })} widths={SHOT_WIDTHS} sizes="(max-width: 900px) 94vw, 640px" formats={['avif']} fallbackFormat="webp" loading="eager" decoding="async" />
+    </div>
+    {mob && (
+      <div class:list={['phone', landscape && 'is-landscape']}>
+        <Picture src={mob} alt={t('fiche.shotMobile', { t: p.titre })} widths={MOBILE_WIDTHS} sizes={landscape ? '330px' : '190px'} formats={['avif']} fallbackFormat="webp" loading="lazy" decoding="async" />
+      </div>
+    )}
+  </div>
+  <div class="sheet__body">
+    <p class="kicker sheet__meta"><span>{hhCode(p.hh)}</span><span class="cat"><span class="dot" aria-hidden="true"></span>{loc(c.label, lang)}</span><span>{t(`status.${p.statut}`)}</span><span>{dateRange(p.premier_commit, p.dernier_commit, lang)}</span><span>{commits}</span></p>
+    <h1 class="sheet__title" id="sheet-title">{p.titre}</h1>
+    <p class="sheet__tag" lang={fallbackLang(p.accroche, lang)}>{loc(p.accroche, lang)}</p>
+    {(live || src) && (
+      <div class="sheet__actions">
+        {live && <a class="btn btn--primary" href={live} target="_blank" rel="noopener"><Fragment set:html={t('fiche.launch') + ext} /><span class="sr-only">{t('newTab')}</span></a>}
+        {src && <a class="btn btn--ghost" href={src} target="_blank" rel="noopener"><Fragment set:html={t('fiche.source') + ext} /><span class="sr-only">{t('fiche.sourceSr')}</span></a>}
+      </div>
+    )}
+    <p class="sheet__desc" lang={fallbackLang(p.description, lang)}>{loc(p.description, lang)}</p>
+    <div class="sheet__cols">
+      {wow.length > 0 && <section><h2 class="sheet__h">{t('fiche.wow')}</h2><ul class="sheet__wow" lang={fallbackLang(p.points_forts, lang)}>{wow.map((w) => <li>{w}</li>)}</ul></section>}
+      <section>
+        {hint && <><h2 class="sheet__h">{T('fiche.howto')}</h2><p class="sheet__hint" lang={fallbackLang(p.mode_emploi, lang)}>{hint}</p></>}
+        <h2 class="sheet__h">{t('fiche.tech')}</h2>
+        <ul class="sheet__tech">{p.tech.map((x) => <li>{x}</li>)}</ul>
+      </section>
+    </div>
+    {related.length > 0 && (
+      <section class="sheet__rel">
+        <h2 class="sheet__h">{t('fiche.related')}</h2>
+        <ul>{related.map((q) => <li><a href={ROUTES.project(q.slug, lang)} data-open={q.slug} style={`--cat:${catById.get(q.categorie)!.couleur}`}><span class="dot" aria-hidden="true"></span>{q.titre}</a></li>)}</ul>
+      </section>
+    )}
+    {versions.length > 0 && (
+      <section class="sheet__versions">
+        <h2 class="sheet__h">{t('fiche.versions')}</h2>
+        <ul>{versions.map((v) => (
+          <li>
+            {v.live ? <a href={v.live} target="_blank" rel="noopener">{v.titre}<span class="sr-only">{t('newTab')}</span></a> : <span>{v.titre}</span>}
+            {v.depot && p.depot.public && <a href={repoUrl(v.depot)} target="_blank" rel="noopener">{t('fiche.source')}<span class="sr-only">{t('fiche.sourceSr')}</span></a>}
+          </li>
+        ))}</ul>
+      </section>
+    )}
+  </div>
+  <nav class="sheet__nav" aria-label={t('fiche.navLabel')}>
+    <a href={ROUTES.project(prev.slug, lang)} rel="prev" data-step="-1" data-slug={prev.slug} aria-label={T('fiche.prev', { t: prev.titre })}><span aria-hidden="true">←</span><span class="lbl">{prev.titre}</span></a>
+    <span class="sheet__pos" aria-hidden="true">{pad(index + 1)} / {pad(total)}</span>
+    <a href={ROUTES.project(next.slug, lang)} rel="next" data-step="1" data-slug={next.slug} aria-label={T('fiche.next', { t: next.titre })}><span class="lbl">{next.titre}</span><span aria-hidden="true">→</span></a>
+  </nav>
+</article>

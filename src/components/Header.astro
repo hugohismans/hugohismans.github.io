@@ -1,0 +1,38 @@
+---
+import { useT, ROUTES, otherLang, type Lang } from '../i18n/ui';
+import { typo } from '../lib/typo';
+
+interface Props {
+  lang: Lang;
+  /** Sur l'accueil, les liens sont des ancres ; ailleurs, ils pointent vers l'accueil. */
+  home?: boolean;
+  /** Chemin équivalent dans l'autre langue. */
+  altPath: string;
+  readout?: boolean;
+}
+const { lang, home = false, altPath, readout = false } = Astro.props;
+const t = useT(lang);
+const T = (k: Parameters<typeof t>[0]) => typo(t(k), lang);
+const base = home ? '' : ROUTES.home[lang];
+const ol = otherLang(lang);
+---
+<header class="top">
+  <a class="brand" href={home ? '#top' : ROUTES.home[lang]} aria-label={home ? t('brand.home') : t('brand.homePage')}>
+    <svg viewBox="0 0 30 30" aria-hidden="true"><circle class="o" cx="15" cy="15" r="11.5" stroke-opacity=".45"/><ellipse class="o" cx="15" cy="15" rx="13.5" ry="5" transform="rotate(-24 15 15)"/><circle cx="15" cy="15" r="4.2" fill="#04050b" stroke="#ffd9b0" stroke-width="1.4"/><g class="p"><circle cx="15" cy="3.5" r="1.8" fill="#ff9d4d"/></g></svg>
+    <span>Hugo Hismans</span>
+  </a>
+  <nav class="nav" aria-label={t('nav.label')}>
+    <a href={`${base}#phares`}>{t('nav.phares')}</a>
+    <a href={`${base}#atlas`}>{t('nav.atlas')}</a>
+    <a href={`${base}#apropos`}>{t('nav.about')}</a>
+  </nav>
+  <div class="top__right">
+    {readout && (
+      <p class="readout" aria-hidden="true"><span class="readout__k">{t('readout.k')}</span><span class="readout__val">{lang === 'fr' ? '26 700' : '26,700'} {t('readout.unit')}</span><span class="readout__zone">{t('zone.orion')}</span></p>
+    )}
+    <button class="motion-toggle" type="button" aria-pressed="false" title={t('motion.title')} data-label-full={t('motion.reduce')} data-label-reduced={t('motion.reduced')}>
+      <span class="motion-toggle__icon" aria-hidden="true"></span><span class="motion-toggle__txt" aria-hidden="true">{T('motion.reduce')}</span><span class="sr-only">{t('motion.reduce')}</span>
+    </button>
+    <a class="lang-switch" href={altPath} hreflang={ol} lang={ol} aria-label={t('lang.switchLabel')} data-lang-switch>{t('lang.switchShort')}</a>
+  </div>
+</header>

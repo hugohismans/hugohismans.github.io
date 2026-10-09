@@ -1,0 +1,13 @@
+---
+/** Coquille de la modale : le contenu est la fiche de la page projet, chargée à la demande. */
+import { useT, type Lang } from '../i18n/ui';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+---
+<dialog class="fiche" id="fiche" aria-labelledby="sheet-title" data-loading={t('fiche.loading')}>
+  <div class="fiche__panel">
+    <button class="fiche__close" type="button" data-close aria-label={t('fiche.close')}><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3 3 13"/></svg></button>
+    <div class="fiche__slot"></div>
+  </div>
+</dialog>

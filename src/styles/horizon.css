@@ -1,0 +1,15 @@
+/* ============================================================ horizon (pied de page) et 404 */
+@layer sections {
+  .horizon { min-height: 100vh; min-height: 100svh; display: grid; place-items: center; text-align: center; padding: 120px var(--gutter) 40px; }
+  .horizon__inner { max-width: 54rem; display: grid; justify-items: center; }
+  .horizon .kicker { justify-content: center; color: #ffd9b0; }
+  .horizon__title { margin: 0 0 .35em; font: 300 clamp(3rem, 9vw, 8rem)/.9 var(--f-display); font-variation-settings: "opsz" 144, "SOFT" 60; letter-spacing: -.03em; }
+  .horizon__title em { font-style: italic; color: transparent; background: linear-gradient(100deg, #ffe3c2, #ff9d4d 55%, #ff7aa2); -webkit-background-clip: text; background-clip: text; padding-right: .08em; }
+  .horizon__text { margin: 0 0 32px; max-width: 34rem; color: var(--ink-2); font-size: 1.1rem; }
+  .horizon__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .horizon__small { margin: 64px 0 0; max-width: 46rem; padding: 14px 18px; border-radius: 14px; background: rgba(4, 5, 11, .78); border: 1px solid var(--line); font: 500 .72rem/1.8 var(--f-mono); letter-spacing: .04em; color: var(--ink-2); }
+  @media (max-width: 760px) { .horizon__small { font-size: .75rem; } }
+  .lost { min-height: 100vh; min-height: 100svh; padding-top: clamp(200px, 34vh, 340px); }
+  body.is-lost .sky__bh { left: 50%; top: max(150px, 20vh); width: min(22vmin, 170px); }
+  body.is-lost .sky { background: radial-gradient(ellipse 50% 30% at 50% 20%, rgba(255, 150, 80, .2), transparent 70%), radial-gradient(ellipse 100% 70% at 50% 20%, #171331 0%, #0a0a1b 45%, var(--bg) 78%); }
+}

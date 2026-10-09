@@ -1,0 +1,35 @@
+/* ============================================================ tokens
+   Couleurs, polices et rythmes. Les couleurs d'amas viennent des données
+   (variable --cat posée en ligne sur chaque élément). */
+@property --a { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+@layer tokens, base, components, sections, effects, lite, calm;
+
+@layer tokens {
+  :root {
+    --bg: #04050b;
+    --bg-1: #080a16;
+    --bg-2: #0f1226;
+    --line: rgba(236, 232, 246, .11);
+    --line-2: rgba(236, 232, 246, .22);
+    --ink: #efebf8;
+    --ink-2: #bdb7d4;
+    --ink-3: #9a94b4;
+    --accent: #ff9d4d;
+    --accent-2: #7cc8ff;
+    --focus: #ffd166;
+    --panel: rgba(7, 8, 19, .74);
+    --paper: #efe8da;
+    --paper-2: #e6dcc9;
+    --paper-ink: #0e0d0c;
+    --f-display: "Fraunces Variable", "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --f-text: "Manrope Variable", "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --f-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --gutter: clamp(16px, 4.2vw, 64px);
+    --maxw: 1320px;
+    --top-h: 68px;
+    --ease-out: cubic-bezier(.16, 1, .3, 1);
+    --ease-io: cubic-bezier(.65, 0, .35, 1);
+    color-scheme: dark;
+  }
+}

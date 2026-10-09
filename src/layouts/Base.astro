@@ -1,0 +1,92 @@
+---
+/**
+ * Gabarit commun : <head>, polices auto-hébergées, préférences appliquées
+ * avant le premier rendu (mode calme, garde-fou WebGL).
+ */
+import '@fontsource-variable/fraunces/full.css';
+import '@fontsource-variable/fraunces/full-italic.css';
+import '@fontsource-variable/manrope/index.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/600.css';
+import '../styles/main.css';
+import frauncesUrl from '@fontsource-variable/fraunces/files/fraunces-latin-full-normal.woff2?url';
+import { SITE } from '../config/site';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  /** Chemin de cette page (ex. /projets/slug/). */
+  path: string;
+  /** Chemin équivalent dans l'autre langue. */
+  altPath?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  bodyClass?: string;
+  noindex?: boolean;
+}
+const { lang, title, description, path, altPath, ogImage, ogType = 'website', bodyClass, noindex } = Astro.props;
+const abs = (p: string) => new URL(p, SITE.url).href;
+const other = lang === 'fr' ? 'en' : 'fr';
+const isPaper = bodyClass?.includes('paper');
+---
+<!doctype html>
+<html lang={lang} data-motion="full">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{title}</title>
+<meta name="description" content={description}>
+<meta name="theme-color" content={isPaper ? '#efe8da' : SITE.themeColor}>
+<meta name="color-scheme" content={isPaper ? 'light' : 'dark'}>
+<script is:inline>
+/* Avant le premier rendu : mode calme (réglage système ou choix mémorisé)
+   et garde-fou WebGL (un démarrage 3D qui a planté désactive la 3D sur cet appareil). */
+(function () {
+  var d = document.documentElement, m = 'full', rm = false, gl = 'ok', ls = null, ss = null;
+  try { rm = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  if (rm) m = 'reduce';
+  try { ls = window.localStorage; } catch (e) {}
+  try { ss = window.sessionStorage; } catch (e) {}
+  try { var s = ls && ls.getItem('hh-motion'); if (s === 'reduce' || s === 'full') m = s; } catch (e) {}
+  d.setAttribute('data-motion', m);
+  d.classList.add('js');
+  try {
+    if (location.hash === '#avec3d') { ls && ls.removeItem('hh-gl-off'); ls && ls.removeItem('hh-gl-boot'); ss && ss.removeItem('hh-gl-boot'); }
+    var boot = (ls && ls.getItem('hh-gl-boot')) || (ss && ss.getItem('hh-gl-boot'));
+    if (boot) {
+      /* le chargement précédent s'est arrêté pendant le démarrage de la 3D : on ne réessaie plus */
+      ls && ls.setItem('hh-gl-off', String(Date.now()));
+      ls && ls.removeItem('hh-gl-boot'); ss && ss.removeItem('hh-gl-boot');
+      gl = 'off';
+    }
+    if (ls && ls.getItem('hh-gl-off')) gl = 'off';
+  } catch (e) {}
+  if (location.hash === '#sans3d' || /[?&]nogl\b/.test(location.search)) gl = 'off';
+  d.setAttribute('data-gl', gl);
+})();
+</script>
+<link rel="preload" href={frauncesUrl} as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href={abs(path)}>
+{altPath && <link rel="alternate" hreflang={lang} href={abs(path)}>}
+{altPath && <link rel="alternate" hreflang={other} href={abs(altPath)}>}
+{altPath && <link rel="alternate" hreflang="x-default" href={abs(lang === 'fr' ? path : altPath)}>}
+{noindex && <meta name="robots" content="noindex">}
+<meta property="og:type" content={ogType}>
+<meta property="og:site_name" content="Hugo Hismans">
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:url" content={abs(path)}>
+<meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_GB'}>
+{ogImage && <meta property="og:image" content={abs(ogImage)}>}
+{ogImage && <meta property="og:image:width" content="1200">}
+{ogImage && <meta property="og:image:height" content="750">}
+<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'}>
+<slot name="head" />
+</head>
+<body class={bodyClass}>
+<slot />
+</body>
+</html>

@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import ProjectSheet from './ProjectSheet.astro';
+import { getImage } from 'astro:assets';
+import { useT, ROUTES, otherLang, type Lang } from '../i18n/ui';
+import { loc, type Project } from '../lib/catalogue';
+import { desktopShot } from '../lib/images';
+
+interface Props { p: Project; lang: Lang }
+const { p, lang } = Astro.props;
+const t = useT(lang);
+const og = await getImage({ src: desktopShot(p.slug), width: 1200, format: 'jpg', quality: 78 });
+const path = ROUTES.project(p.slug, lang);
+---
+<Base lang={lang} title={`${p.titre} · Hugo Hismans`} description={loc(p.accroche, lang)} path={path} altPath={ROUTES.project(p.slug, otherLang(lang))} ogImage={og.src} ogType="article" bodyClass="paper">
+  <a class="skip" href="#sheet-title">{p.titre}</a>
+  <Header lang={lang} altPath={ROUTES.project(p.slug, otherLang(lang))} />
+  <main class="page" id="top">
+    <ProjectSheet p={p} lang={lang} />
+  </main>
+  <footer class="page__foot"><p>{t('page.footer', { y: new Date().getFullYear() })}</p></footer>
+  <script>
+    import '../scripts/page';
+  </script>
+</Base>

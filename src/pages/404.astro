@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Sky from '../components/Sky.astro';
+import { useT } from '../i18n/ui';
+import { typo } from '../lib/typo';
+
+const fr = useT('fr'), en = useT('en');
+---
+<Base lang="fr" title={`${fr('404.title')} · Hugo Hismans`} description={typo(fr('404.text'), 'fr')} path="/404.html" noindex bodyClass="is-lost">
+  <Sky lang="fr" scene={false} />
+  <Header lang="fr" altPath="/en/" />
+  <main id="top">
+    <section class="horizon lost" aria-labelledby="lost-title">
+      <div class="horizon__inner">
+        <p class="kicker"><span>{fr('404.kicker')}</span></p>
+        <h1 class="horizon__title" id="lost-title">{fr('404.title')}<br><em lang="en">{en('404.title')}</em></h1>
+        <p class="horizon__text">{typo(fr('404.text'), 'fr')}</p>
+        <p class="horizon__text" lang="en">{en('404.text')}</p>
+        <div class="horizon__actions">
+          <a class="btn btn--primary" href="/#atlas">{fr('404.atlas')}</a>
+          <a class="btn btn--ghost" href="/en/#atlas" lang="en">{en('404.atlas')}</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    import '../scripts/page';
+  </script>
+</Base>

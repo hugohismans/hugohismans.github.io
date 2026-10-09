@@ -1,0 +1,49 @@
+---
+import { useT, type Lang } from '../i18n/ui';
+import { ABOUT } from '../i18n/about';
+import { typo } from '../lib/typo';
+import { stats, fmtNumber, monthYear } from '../lib/catalogue';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const a = ABOUT[lang];
+const n = (x: number) => fmtNumber(x, lang);
+const items = [
+  { n: stats.projects, l: t('stats.projects') },
+  { n: stats.commits, l: t('stats.commits'), s: t('stats.commits.sub', { n: stats.repos }) },
+  { n: stats.months, l: t('stats.months'), s: `${monthYear(stats.first, lang)} → ${monthYear(stats.last, lang)}` },
+  { n: stats.sound, l: t('stats.sound'), s: t('stats.sound.sub') },
+];
+const spec = stats.spectrum;
+const max = Math.max(...spec.map((s) => s.n));
+const last = Math.max(1, spec.length - 1);
+---
+<section class="about" id="apropos" aria-labelledby="about-title">
+  <div class="about__grid">
+    <div class="about__text panel">
+      <p class="kicker"><span>{t('about.kicker.num')}</span><span>{a.kicker}</span></p>
+      <h2 class="h2" id="about-title" set:html={typo(a.title, lang)} />
+      {a.paragraphs.map((p) => <p set:html={typo(p, lang)} />)}
+    </div>
+    <ul class="stats" aria-label={t('stats.label')}>
+      {items.map((it) => (
+        <li class="stat">
+          <span class="stat__n" data-count={it.n} aria-hidden="true">{n(it.n)}</span><span class="sr-only">{n(it.n)} </span>
+          <span class="stat__l">{it.l}</span>
+          {it.s && <span class="stat__s">{it.s}</span>}
+        </li>
+      ))}
+    </ul>
+  </div>
+  <figure class="spec panel">
+    <figcaption><p class="kicker"><span>{t('spec.kicker')}</span><span>{t('spec.analysed', { n: stats.projects })}</span></p><p class="spec__title">{typo(t('spec.title'), lang)}</p></figcaption>
+    <ol class="spec__list">
+      {spec.map((s, i) => (
+        <li style={`--x:${(4 + (92 * i) / last).toFixed(2)}%;--h:${(i / last).toFixed(3)};--k:${(s.n / max).toFixed(3)}`}>
+          <span class="spec__line" aria-hidden="true"></span><span class="spec__lbl">{s.label[lang]}</span><span class="spec__n">{s.n}<span class="sr-only"> {t('spec.projects')}</span></span>
+        </li>
+      ))}
+    </ol>
+  </figure>
+</section>

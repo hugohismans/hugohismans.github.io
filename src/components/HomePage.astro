@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Sky from './Sky.astro';
+import Hero from './Hero.astro';
+import About from './About.astro';
+import Phares from './Phares.astro';
+import Atlas from './Atlas.astro';
+import Horizon from './Horizon.astro';
+import FicheDialog from './FicheDialog.astro';
+import { getImage } from 'astro:assets';
+import { useT, ROUTES, otherLang, type Lang } from '../i18n/ui';
+import { typo } from '../lib/typo';
+import { projects, activeCategories, catLetter, loc, hhCode, relatedOf, stats } from '../lib/catalogue';
+import { desktopShot } from '../lib/images';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useT(lang);
+const catIdx = new Map(activeCategories.map((c, i) => [c.id, i]));
+const first = projects[0];
+const og = first ? await getImage({ src: desktopShot(first.slug), width: 1200, format: 'jpg', quality: 78 }) : null;
+
+/* Données minimales pour la scène 3D et les scripts (lues une fois, au chargement). */
+const sceneData = {
+  lang,
+  cats: activeCategories.map((c) => ({ id: c.id, l: catLetter(c), color: c.couleur, label: loc(c.label, lang), amas: c.amas ?? null })),
+  projects: projects.map((p) => ({
+    s: p.slug, t: p.titre, n: hhCode(p.hh), c: catIdx.get(p.categorie)!, k: p.mise_en_avant.score,
+    f: p.mise_en_avant.phare ?? 0, r: relatedOf(p).map((q) => q.slug), u: ROUTES.project(p.slug, lang),
+  })),
+  i18n: {
+    cluster: t('cluster'), unit: t('readout.unit'),
+    zones: { orion: t('zone.orion'), sagittarius: t('zone.sagittarius'), cluster: t('zone.cluster'), phares: t('zone.phares'), polar: t('zone.polar'), horizon: t('zone.horizon') },
+    loading: t('fiche.loading'), prev: typo(t('fiche.prev'), lang), next: typo(t('fiche.next'), lang),
+  },
+};
+const json = JSON.stringify(sceneData).replace(/</g, '\\u003c');
+---
+<Base lang={lang} title={t('meta.title')} description={typo(t('meta.description', { n: stats.projects }), lang)} path={ROUTES.home[lang]} altPath={ROUTES.home[otherLang(lang)]} ogImage={og?.src}>
+  <a class="skip" href="#atlas">{t('skip')}</a>
+  <Sky lang={lang} />
+  <Header lang={lang} home altPath={ROUTES.home[otherLang(lang)]} readout />
+  <main id="top">
+    <Hero lang={lang} />
+    <About lang={lang} />
+    <Phares lang={lang} />
+    <Atlas lang={lang} />
+  </main>
+  <Horizon lang={lang} />
+  <FicheDialog lang={lang} />
+  <script is:inline type="application/json" id="cosmos-data" set:html={json}></script>
+  <script>
+    import '../scripts/home';
+  </script>
+</Base>
