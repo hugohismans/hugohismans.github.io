@@ -764,8 +764,8 @@
         "score": 8,
         "phare": 9,
         "pourquoi": {
-          "fr": "Une des images les plus spectaculaires du lot pour représenter le Labo et les maths ; à lier vers le préréglage « Racines sur cercle » + « Feu ».",
-          "en": "One of the most striking images in the set to represent the Lab and the math; link it to the \"Roots on a circle\" + \"Fire\" preset."
+          "fr": "Les fractales de Newton à explorer en direct : choisis les racines, la palette, et zoome sans fin.",
+          "en": "Newton fractals to explore live: pick the roots and the palette, and zoom endlessly."
         }
       },
       "visibilite": "public"
@@ -1463,8 +1463,8 @@
         "score": 9,
         "phare": 4,
         "pourquoi": {
-          "fr": "Le projet le plus vivant : domaine propre, communauté réelle, éditeur de niveaux et backend sécurisé ; l'esthétique néon tranche avec le reste de la sélection.",
-          "en": "The most alive project: its own domain, a real community, a level editor and a secured backend; the neon look stands out from the rest of the selection."
+          "fr": "Un jeu de circuits électriques au néon, avec son domaine, ses joueurs, un éditeur de niveaux et un classement.",
+          "en": "A neon electric-circuit puzzle game with its own domain, its players, a level editor and a leaderboard."
         }
       },
       "visibilite": "public"
@@ -2182,8 +2182,8 @@
         "score": 10,
         "phare": 2,
         "pourquoi": {
-          "fr": "La direction artistique la plus singulière (encre et papier) et la prouesse technique la plus rare : portails récursifs qui changent d'échelle, 223 commits sur deux mois.",
-          "en": "The most distinctive art direction (ink and paper) and the rarest technical feat: recursive scale-changing portals, 223 commits over two months."
+          "fr": "Un monde à l'encre et au papier, traversé de portails récursifs qui changent ta taille. Deux mois de travail, 223 commits.",
+          "en": "An ink-and-paper world crossed by recursive portals that change your size. Two months of work, 223 commits."
         }
       },
       "visibilite": "public"
@@ -2286,8 +2286,8 @@
         "score": 10,
         "phare": 1,
         "pourquoi": {
-          "fr": "Le waouh absolu et la meilleure image d'ouverture : un vrai trou noir calculé en direct par un shader, vérifié contre la théorie, avec voix et musique. 422 commits.",
-          "en": "The ultimate wow and the best opening image: a real black hole computed live by a shader, checked against theory, with voice and music. 422 commits."
+          "fr": "Un vrai trou noir, calculé pixel par pixel par un shader et vérifié contre la théorie, à explorer depuis un vaisseau avec voix et musique.",
+          "en": "A real black hole, computed pixel by pixel by a shader and checked against theory, explored from a ship with voice and music."
         }
       },
       "visibilite": "public"
@@ -2789,8 +2789,8 @@
         "score": 9,
         "phare": 3,
         "pourquoi": {
-          "fr": "Un globe 3D lisible en une seconde, une identité « carte marine de nuit » très cohérente et un jeu complet, bilingue, avec repli SVG.",
-          "en": "A 3D globe you can read in a second, a very consistent \"nautical chart at night\" identity and a complete bilingual game with an SVG fallback."
+          "fr": "Un globe qu'on comprend en une seconde, habillé en carte marine de nuit : drapeaux, capitales, monnaies, en français et en anglais.",
+          "en": "A globe you understand in a second, dressed as a night-time nautical chart: flags, capitals, currencies, in French and English."
         }
       },
       "visibilite": "public"
@@ -2892,8 +2892,8 @@
         "score": 8,
         "phare": 6,
         "pourquoi": {
-          "fr": "Une idée physique immédiatement compréhensible (le téléphone devient un verre) et la plus belle image mobile du lot ; représente la catégorie Expériences.",
-          "en": "A physical idea you get instantly (the phone becomes a glass) and the best mobile image in the set; it represents the Experiences category."
+          "fr": "Ton téléphone devient un verre plein à ras bord. Tout se joue à l'inclinaison : surtout, ne renverse rien.",
+          "en": "Your phone becomes a glass filled to the brim. It all comes down to tilting: whatever you do, don't spill."
         }
       },
       "visibilite": "public"
@@ -3412,8 +3412,8 @@
         "score": 9,
         "phare": 7,
         "pourquoi": {
-          "fr": "Le jeu le plus abouti du lot (51 commits) : identité néon forte, 11 ambiances, éducatif pour les enfants, bilingue et installable.",
-          "en": "The most polished game in the set (51 commits): strong neon identity, 11 themes, educational for children, bilingual and installable."
+          "fr": "Fais rebondir les bulles et fabrique le nombre cible : un jeu de calcul au néon, onze ambiances, installable sur téléphone.",
+          "en": "Bounce the bubbles and build the target number: a neon math game with eleven themes, installable on your phone."
         }
       },
       "visibilite": "public"
@@ -3515,8 +3515,8 @@
         "score": 8,
         "phare": 8,
         "pourquoi": {
-          "fr": "Représente les jeux à plusieurs : table animée chaleureuse, sons synthétisés, vrai multijoueur en ligne ; un registre visuel (feutre vert et or) différent des autres.",
-          "en": "Represents the multiplayer games: a warm animated table, synthesized sounds, real online multiplayer; a visual register (green felt and gold) unlike the others."
+          "fr": "Le poker menteur aux dés, autour d'une table de feutre vert : sur un seul téléphone ou en ligne entre amis.",
+          "en": "Liar's dice poker around a green felt table: on a single phone or online with friends."
         }
       },
       "visibilite": "public"
@@ -3680,8 +3680,8 @@
         "score": 9,
         "phare": 5,
         "pourquoi": {
-          "fr": "Le meilleur « outil » à montrer : vision par ordinateur faite maison et cube 3D animé, un produit utile qui parle à tout le monde.",
-          "en": "The best \"tool\" to show: homemade computer vision and an animated 3D cube, a useful product anyone can relate to."
+          "fr": "Montre ton cube à la caméra : l'appli lit les couleurs, calcule la solution et l'anime en 3D, coup par coup.",
+          "en": "Show your cube to the camera: the app reads the colors, computes the solution and animates it in 3D, move by move."
         }
       },
       "visibilite": "public"
