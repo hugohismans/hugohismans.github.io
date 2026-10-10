@@ -55,7 +55,11 @@ const isPaper = bodyClass?.includes('paper');
   try {
     if (location.hash === '#avec3d' || location.hash === '#diag') { ls && ls.removeItem('hh-gl-off'); ls && ls.removeItem('hh-gl-boot'); ls && ls.removeItem('hh-gl-crash'); ss && ss.removeItem('hh-gl-boot'); }
     var boot = (ls && ls.getItem('hh-gl-boot')) || (ss && ss.getItem('hh-gl-boot'));
-    if (boot) {
+    if (boot === 'mid') {
+      /* le profil intermédiaire a planté au démarrage : on redescend en léger, sans compter de plantage */
+      ls && ls.setItem('hh-gl-tier', 'lite');
+      ls && ls.removeItem('hh-gl-boot'); ss && ss.removeItem('hh-gl-boot');
+    } else if (boot) {
       /* le chargement précédent s'est arrêté pendant le démarrage de la 3D.
          Une fois : on saute la 3D pour cette visite. Deux fois de suite : plus jamais sur cet appareil. */
       var n = (parseInt(ls && ls.getItem('hh-gl-crash'), 10) || 0) + 1;

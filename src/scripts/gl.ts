@@ -16,7 +16,10 @@ import { root, S, isLite, store, readData } from './core';
 import { onMotion } from './motion';
 import type { CosmosApi } from './cosmos/index';
 
-const BOOT = 'hh-gl-boot', OFF = 'hh-gl-off';
+const BOOT = 'hh-gl-boot', OFF = 'hh-gl-off', TIER = 'hh-gl-tier';
+type Tier = 'full' | 'mid' | 'lite';
+/* Profil de départ : ordinateur → full ; téléphone → celui mémorisé (mid après une visite fluide), sinon lite. */
+const pickTier = (): Tier => (!isLite() ? 'full' : store.get(TIER) === 'mid' ? 'mid' : 'lite');
 const params = new URLSearchParams(location.search);
 
 /* Journal de diagnostic, affiché avec #diag dans l'adresse (utile pour tester sur un vrai téléphone). */
@@ -34,7 +37,7 @@ const log = (m: string) => {
   }
 };
 
-const markBoot = () => { const v = String(Date.now()); store.set(BOOT, v); store.set(BOOT, v, true); };
+const markBoot = (tier: Tier) => { store.set(BOOT, tier); store.set(BOOT, tier, true); };
 const clearBoot = () => { store.del(BOOT); store.del(BOOT, true); };
 addEventListener('pagehide', clearBoot);
 
@@ -61,24 +64,32 @@ export function initGL(hooks: GlHooks) {
     root.classList.remove('gl-on');
   };
 
-  async function boot() {
+  async function boot(forced?: Tier) {
     if (api || booting || !allowed()) return;
     booting = true;
-    const lite = isLite();
+    const tier: Tier = forced ?? pickTier();
     try {
       const mod = await import('./cosmos/index');
       if (!allowed()) return;
-      markBoot();
-      log('démarrage de la 3D (' + (lite ? 'version légère' : 'version complète') + ')');
+      markBoot(tier);
+      log('démarrage de la 3D (profil ' + tier + ')');
       api = mod.createCosmos(data!, {
-        lite,
+        tier,
         forceHQ: params.get('q') === 'high',
         still: params.has('still'),
         onOpen: hooks.onOpen,
         // 30 images rendues sans plantage : le démarrage est passé, on lève le drapeau tout de suite
         onHealthy: () => { clearBoot(); store.del('hh-gl-crash'); log('3D en marche (30 images rendues)'); },
-        // trop lent ou contexte perdu : retour au ciel CSS pour cette visite seulement
-        onFail: (reason) => fail(reason, false),
+        onSmooth: () => { store.set(TIER, 'mid'); log('le téléphone suit sans peine : profil « mid » à la prochaine visite'); },
+        onFail: (reason) => {
+          if (tier === 'mid') {
+            // le profil intermédiaire est trop lourd : on le retient et on relance tout de suite en léger
+            store.set(TIER, 'lite');
+            log('profil mid trop lourd (' + reason + ') : relance en lite');
+            fail(reason, false);
+            requestAnimationFrame(() => boot('lite'));
+          } else fail(reason, false); // lite trop lent ou contexte perdu : ciel CSS pour cette visite
+        },
       });
       hooks.onReady(api);
     } catch (e) {
@@ -91,9 +102,9 @@ export function initGL(hooks: GlHooks) {
 
   // Après le premier rendu ; sur mobile, seulement une fois la page chargée et posée.
   const lite = isLite();
-  log('appareil ' + (lite ? 'tactile ou étroit' : 'ordinateur') + ' · ' + innerWidth + '×' + innerHeight + ' · dpr ' + devicePixelRatio + ' · animations ' + (S.motion ? 'oui' : 'non'));
+  log('appareil ' + (lite ? 'tactile ou étroit' : 'ordinateur') + ' · ' + innerWidth + '×' + innerHeight + ' · dpr ' + devicePixelRatio + ' · animations ' + (S.motion ? 'oui' : 'non') + ' · profil ' + pickTier());
   const later = (fn: () => void, ms: number) => ('requestIdleCallback' in window ? requestIdleCallback(() => setTimeout(fn, ms), { timeout: ms + 1500 }) : setTimeout(fn, ms + 200));
-  const start = () => later(boot, lite ? 1200 : 60);
+  const start = () => later(() => boot(), lite ? 1200 : 60);
   if (document.readyState === 'complete' || !lite) requestAnimationFrame(() => requestAnimationFrame(start));
   else addEventListener('load', start, { once: true });
 

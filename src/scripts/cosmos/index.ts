@@ -14,7 +14,7 @@ import { buildStars } from './stars';
 import { buildLens } from './lens';
 import { createCamera } from './camera';
 import { createLabels } from './labels';
-import { quality } from './quality';
+import { quality, type Tier } from './quality';
 
 export interface CosmosApi {
   relayout(): void;
@@ -23,7 +23,7 @@ export interface CosmosApi {
   dispose(): void;
 }
 export interface CosmosOpts {
-  lite: boolean;
+  tier: Tier;
   forceHQ: boolean;
   still: boolean;
   onOpen: (slug: string) => void;
@@ -31,11 +31,13 @@ export interface CosmosOpts {
   onHealthy: () => void;
   /** Appelé si la scène doit être abandonnée (contexte perdu, trop lente). */
   onFail: (reason: string) => void;
+  /** Profil léger qui tourne vite (≥ 50 i/s pendant l'intro) : le téléphone peut monter d'un cran. */
+  onSmooth?: () => void;
 }
 
 export function createCosmos(data: SceneData, opts: CosmosOpts): CosmosApi {
   ColorManagement.enabled = false;
-  const q = quality(opts.lite, opts.forceHQ);
+  const q = quality(opts.tier, opts.forceHQ);
   const canvas = document.getElementById('cosmos') as HTMLCanvasElement;
   const renderer = new WebGLRenderer({ canvas, antialias: false, alpha: false, stencil: false, depth: false, powerPreference: q.power, preserveDrawingBuffer: false });
   renderer.outputColorSpace = LinearSRGBColorSpace;
@@ -103,7 +105,7 @@ export function createCosmos(data: SceneData, opts: CosmosOpts): CosmosApi {
   const fly = S.motion && !opts.still;
   const cur = { pos: fly ? new Vector3(Math.cos(1.1) * 170, 110, Math.sin(1.1) * 170) : H0.pos.clone(), target: new Vector3(), sx: H0.sx, sy: H0.sy, fov: H0.fov, dim: 0, lens: 1, hiAmt: 0, hi: -1, fade: opts.still ? 1 : 0 };
   let time = 0, introT = 0, focusCat = -1, selIdx = -1, needRender = true, lastDim = -1, frames = 0, healthy = false, disposed = false;
-  let slowFrames = 0, odd = false;
+  let slowFrames = 0, odd = false, fastFrames = 0, measured = 0, smoothSent = false;
   const o3 = [0, 0, 0];
 
   resize(true);
@@ -190,7 +192,14 @@ export function createCosmos(data: SceneData, opts: CosmosOpts): CosmosApi {
     if (moving) {
       adapt(dt);
       // version légère : si la 3D rame vraiment (moins de 12 i/s pendant 3 s), on rend la main au ciel CSS
-      if (q.lite && !opts.forceHQ && introT > 1.5 && introT < 8) { slowFrames = dt > 0.085 ? slowFrames + 1 : Math.max(0, slowFrames - 1); if (slowFrames > 36) opts.onFail('slow'); }
+      // téléphone : si la 3D rame vraiment pendant l'intro, on redescend d'un cran (mid → lite → ciel CSS)
+      if (q.lite && !opts.forceHQ && introT > 1.5 && introT < 8) {
+        const tooSlow = q.tier === 'mid' ? 0.05 : 0.085; // mid : moins de 20 i/s ; lite : moins de 12 i/s
+        slowFrames = dt > tooSlow ? slowFrames + 1 : Math.max(0, slowFrames - 1);
+        if (slowFrames > 36) opts.onFail('slow');
+        measured++; if (dt < 0.021) fastFrames++;
+      }
+      if (q.tier === 'lite' && !smoothSent && introT >= 6 && measured > 100) { smoothSent = true; if (fastFrames / measured > 0.85) opts.onSmooth?.(); }
     }
   });
   holdLoop(true);
