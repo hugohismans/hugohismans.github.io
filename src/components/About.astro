@@ -4,6 +4,8 @@ import { ABOUT } from '../i18n/about';
 import { typo } from '../lib/typo';
 import { stats, fmtNumber, monthYear } from '../lib/catalogue';
 import { SITE } from '../config/site';
+import { Picture } from 'astro:assets';
+import portrait from '../assets/hugo.jpg';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -23,8 +25,15 @@ const last = Math.max(1, spec.length - 1);
 <section class="about" id="apropos" aria-labelledby="about-title">
   <div class="about__grid">
     <div class="about__text panel">
-      <p class="kicker"><span>{t('about.kicker.num')}</span><span>{a.kicker}</span></p>
-      <h2 class="h2" id="about-title" set:html={typo(a.title, lang)} />
+      <div class="about__head">
+        <div>
+          <p class="kicker"><span>{t('about.kicker.num')}</span><span>{a.kicker}</span></p>
+          <h2 class="h2" id="about-title" set:html={typo(a.title, lang)} />
+        </div>
+        <div class="about__portrait">
+          <Picture src={portrait} alt={a.photoAlt} widths={[160, 320, 480]} sizes="(max-width: 760px) 96px, 168px" formats={['avif', 'webp']} loading="lazy" />
+        </div>
+      </div>
       {a.paragraphs.map((p) => <p set:html={typo(p, lang)} />)}
       <p class="about__contact">{typo(t('contact.lead'), lang)} <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
     </div>

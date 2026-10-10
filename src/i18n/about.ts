@@ -6,6 +6,7 @@
 export const ABOUT = {
   fr: {
     kicker: 'Le pilote',
+    photoAlt: 'Portrait de Hugo Hismans',
     title: "Bonjour, <em>moi c'est Hugo.</em>",
     paragraphs: [
       "J'aime faire des projets. Beaucoup de sujets m'intéressent, des jeux à la physique en passant par les maths et les petits outils du quotidien, et ça finit souvent par devenir quelque chose qu'on peut essayer ici.",
@@ -14,6 +15,7 @@ export const ABOUT = {
   },
   en: {
     kicker: 'The pilot',
+    photoAlt: 'Portrait of Hugo Hismans',
     title: "Hello, <em>I'm Hugo.</em>",
     paragraphs: [
       'I like making projects. A lot of things interest me, from games to physics, maths and small everyday tools, and they often end up as something you can try right here.',

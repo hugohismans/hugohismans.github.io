@@ -68,6 +68,16 @@
   .about__text .about__contact { color: var(--ink); }
   .about__contact a { color: var(--accent); text-underline-offset: 4px; overflow-wrap: anywhere; }
   .about__text .h2 { margin-bottom: .45em; }
+  .about__head { display: flex; align-items: flex-start; justify-content: space-between; gap: clamp(14px, 3vw, 32px); }
+  .about__head > div:first-child { min-width: 0; }
+  /* hublot : portrait rond cerclé d'un anneau « disque d'accrétion » */
+  .about__portrait {
+    position: relative; flex: none; width: clamp(96px, 13vw, 168px); aspect-ratio: 1; border-radius: 50%; margin-top: 4px;
+    padding: 3px; background: conic-gradient(from 210deg, #ffe3c2, #ff9d4d 30%, rgba(255, 122, 162, .7) 55%, rgba(255, 157, 77, .15) 75%, #ffe3c2);
+    box-shadow: 0 0 0 1px rgba(255, 210, 160, .18), 0 0 46px -6px rgba(255, 140, 60, .55);
+  }
+  .about__portrait picture, .about__portrait img { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+  .about__portrait img { border: 3px solid var(--bg); }
   .stats { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: clamp(10px, 1.6vw, 18px); margin: 0; padding: 0; list-style: none; }
   .stat { display: flex; flex-direction: column; justify-content: end; gap: 6px; padding: clamp(18px, 2.4vw, 28px); border-radius: 22px; border: 1px solid var(--line); background: rgba(7, 8, 19, .7); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); min-height: 150px; position: relative; overflow: hidden; }
   .stat::before { content: ""; position: absolute; inset: auto -30% -60% auto; width: 80%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(255, 157, 77, .16), transparent 65%); }
