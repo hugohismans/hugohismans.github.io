@@ -4398,6 +4398,106 @@
         }
       },
       "visibilite": "public"
+    },
+    {
+      "slug": "algebre",
+      "hh": 44,
+      "titre": "Équilibre",
+      "accroche": {
+        "fr": "Résous des équations en gardant une balance à l'équilibre",
+        "en": "Solve equations by keeping a balance scale level"
+      },
+      "description": {
+        "fr": "Un jeu pour découvrir les équations du premier degré. L'équation est une balance à deux plateaux : x est une boîte mystère, les nombres sont des poids. On glisse des cartes d'opération (−3, ÷2, retirer une boîte…) qui agissent toujours sur les deux plateaux à la fois ; si une carte casserait l'équilibre, la balance penche et refuse. Le but : isoler une seule boîte et révéler la valeur de x. L'écriture algébrique se met à jour sous la balance à chaque coup, pour faire le pont vers la notation mathématique. Sept mondes sont prévus, de la simple devinette aux parenthèses et à la mise en équation ; les deux premiers sont jouables.",
+        "en": "A game to discover linear equations. The equation is a two-pan balance: x is a mystery box and numbers are weights. You drag operation cards (−3, ÷2, remove a box…) that always act on both pans at once; if a card would break the balance, the scale tips and refuses. The goal: isolate a single box and reveal the value of x. The written algebra updates under the balance after every move, bridging the gap to mathematical notation. Seven worlds are planned, from simple guessing to brackets and word problems; the first two are playable."
+      },
+      "categorie": "sciences",
+      "tags": [
+        "mathématiques",
+        "algèbre",
+        "équations",
+        "pédagogie",
+        "puzzle",
+        "mobile",
+        "glisser-déposer"
+      ],
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript vanilla (modules ES, sans build ni dépendance)",
+        "SVG animé (balance à ressort amorti)",
+        "Pointer Events (glisser-déposer au doigt et à la souris)",
+        "localStorage",
+        "Node.js (tests du moteur)",
+        "GitHub Pages"
+      ],
+      "tech_courtes": [
+        "JavaScript vanilla",
+        "SVG",
+        "Pointer Events"
+      ],
+      "statut": "en-cours",
+      "cadre": "perso",
+      "langues": [
+        "fr"
+      ],
+      "premier_commit": "2026-10-10",
+      "dernier_commit": "2026-10-10",
+      "commits": 2,
+      "depot": {
+        "nom": "algebre",
+        "chemin": null,
+        "public": true
+      },
+      "liens": {
+        "live": "https://hugohismans.github.io/algebre/"
+      },
+      "points_forts": {
+        "fr": [
+          "Moteur d'équations indépendant de l'affichage, en fractions exactes (aucun flottant), avec 27 tests lançables dans Node ou le navigateur",
+          "Un solveur en largeur vérifie que le « par » de chaque niveau est exactement le nombre minimal de coups",
+          "Balance de Roberval en SVG qui oscille sur un ressort amorti ; les poids tombent et s'empilent, et une carte impossible fait pencher le plateau fautif",
+          "Niveaux décrits en données (« 2x+1=9 », cartes, par) : le même format servira au futur mode création partageable par lien",
+          "Annuler sans limite ni pénalité, étoiles façon golf et progression sauvegardée"
+        ],
+        "en": [
+          "An equation engine independent of rendering, using exact fractions (no floats), with 27 tests that run in Node or the browser",
+          "A breadth-first solver checks that each level's par is exactly the minimum number of moves",
+          "An SVG Roberval balance that sways on a damped spring; weights drop and stack, and an impossible card tips the offending pan",
+          "Levels written as data (\"2x+1=9\", cards, par): the same format will power a future creation mode shared by link",
+          "Unlimited undo with no penalty, golf-style stars and saved progress"
+        ]
+      },
+      "mode_emploi": {
+        "fr": "Glisser une carte sur la balance (ou la toucher) pour l'appliquer aux deux plateaux ; isoler la boîte pour trouver x. Annuler : bouton ↶ ou touche Z",
+        "en": "Drag a card onto the balance (or tap it) to apply it to both pans; isolate the box to find x. Undo: ↶ button or Z key"
+      },
+      "lies": [
+        "addGame",
+        "lesupslab__fractalnewton",
+        "Permi",
+        "Tetris"
+      ],
+      "versions_precedentes": [],
+      "visuel": {
+        "couleurs": [
+          "#fdf8ef",
+          "#1f2a44",
+          "#7c5cff",
+          "#ff9f43",
+          "#12b5a5"
+        ],
+        "mobile": "portrait"
+      },
+      "mise_en_avant": {
+        "score": 7,
+        "phare": null,
+        "pourquoi": {
+          "fr": "",
+          "en": ""
+        }
+      },
+      "visibilite": "public"
     }
   ],
   "anciennes_versions": [
