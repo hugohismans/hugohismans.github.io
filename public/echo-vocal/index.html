@@ -84,7 +84,7 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:0;height:22px}
   <div class="card">
     <h1>Parle,<br>et l'écho <span>dessine</span>.</h1>
     <p>Ta voix est captée au micro, renvoyée quelques secondes plus tard en écho, et la scène réagit en direct : anneaux, ondes, particules. Six textures sonores au choix, du propre au robot.</p>
-    <div class="note"><span>🎧</span><span>Mets un casque : sans casque, le haut-parleur rentre dans le micro et l'écho se répète à l'infini.</span></div>
+    <div class="note"><span>🔊</span><span>Le haut-parleur convient en mode « Une fois » : le micro se ferme pendant que l'écho joue, donc rien ne se répète. En mode « En boucle », un casque évite le larsen.</span></div>
     <button id="startBtn">Activer le micro</button>
     <div id="err"></div>
   </div>
@@ -92,6 +92,9 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:0;height:22px}
 
 <div id="dock">
   <div class="row">
+    <span class="lbl">Écho</span>
+    <div class="chips" id="repeats"></div>
+    <span class="sep"></span>
     <span class="lbl">Son</span>
     <div class="chips" id="modes"></div>
     <span class="sep"></span>
@@ -101,7 +104,7 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:0;height:22px}
   <div class="sliders">
     <div class="s"><label for="drive">Distorsion <b id="vDrive">50 %</b></label><input type="range" id="drive" min="0" max="1" step="0.01" value="0.5"></div>
     <div class="s"><label for="delay">Délai écho <b id="vDelay">1,2 s</b></label><input type="range" id="delay" min="0.15" max="4" step="0.05" value="1.2"></div>
-    <div class="s"><label for="feedback">Répétitions <b id="vFeedback">45 %</b></label><input type="range" id="feedback" min="0" max="0.9" step="0.01" value="0.45"></div>
+    <div class="s" id="sFeedback"><label for="feedback">Répétitions <b id="vFeedback">45 %</b></label><input type="range" id="feedback" min="0" max="0.9" step="0.01" value="0.45"></div>
     <div class="s"><label for="mix">Volume écho <b id="vMix">90 %</b></label><input type="range" id="mix" min="0" max="1.5" step="0.01" value="0.9"></div>
     <div class="s"><label for="intensity">Intensité <b id="vIntensity">100 %</b></label><input type="range" id="intensity" min="0.3" max="2" step="0.05" value="1"></div>
   </div>
@@ -132,7 +135,8 @@ const MODES = {
   robot: { label: 'Robot',     hue: 272, chip: '#c39bff' },
 };
 const STYLES = { orbit: 'Orbite', waves: 'Vagues' };
-const state = { mode: 'clean', drive: .5, delay: 1.2, feedback: .45, mix: .9, monitor: false, style: 'orbit', intensity: 1 };
+const REPEATS = { once: 'Une fois', loop: 'En boucle' };
+const state = { mode: 'clean', repeat: 'once', drive: .5, delay: 1.2, feedback: .45, mix: .9, monitor: false, style: 'orbit', intensity: 1 };
 const fr = (n, d = 1) => n.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
 
 /* ---------- Audio ---------- */
@@ -160,12 +164,33 @@ async function start(){
   n.master = ctx.createGain(); n.master.gain.value = .9;
   n.lim = ctx.createDynamicsCompressor(); n.lim.threshold.value = -8; n.lim.knee.value = 4; n.lim.ratio.value = 14; n.lim.attack.value = .003; n.lim.release.value = .18;
   n.chain = [];
-  n.src.connect(n.inGain); n.inGain.connect(n.dryAn); n.inGain.connect(n.fxIn);
+  // Porte d'entrée : en mode « Une fois », elle se ferme pendant que l'écho joue,
+  // pour que le son du haut-parleur capté par le micro ne reparte pas dans l'écho.
+  n.gate = ctx.createGain(); n.gate.gain.value = 1;
+  // Suivi d'enveloppe de l'écho (signal de contrôle, jamais audible) : l'écho et une copie
+  // retardée de 180 ms (pour couvrir la latence haut-parleur → micro), redressés, lissés,
+  // puis transformés en valeur entre 0 et -1 ajoutée au gain de la porte (1 → 0).
+  n.ctrlSum = ctx.createGain(); n.ctrlSum.gain.value = 1;
+  n.ctrlDelay = ctx.createDelay(1); n.ctrlDelay.delayTime.value = .18;
+  n.ctrlAbs = ctx.createWaveShaper(); n.ctrlAbs.curve = curve(x => Math.abs(x));
+  n.ctrlEnv = ctx.createBiquadFilter(); n.ctrlEnv.type = 'lowpass'; n.ctrlEnv.frequency.value = 22; n.ctrlEnv.Q.value = .5;
+  n.ctrlMap = ctx.createWaveShaper(); n.ctrlMap.curve = curve(x => -Math.min(1, Math.max(0, (Math.abs(x) - .012) * 45)));
+  n.src.connect(n.inGain); n.inGain.connect(n.dryAn); n.inGain.connect(n.gate); n.gate.connect(n.fxIn);
   n.fxOut.connect(n.delay); n.delay.connect(n.fbFilter); n.fbFilter.connect(n.fb); n.fb.connect(n.delay);
   n.delay.connect(n.wet); n.wet.connect(n.wetAn); n.wetAn.connect(n.master);
+  n.wet.connect(n.ctrlSum); n.wet.connect(n.ctrlDelay); n.ctrlDelay.connect(n.ctrlSum);
+  n.ctrlSum.connect(n.ctrlAbs); n.ctrlAbs.connect(n.ctrlEnv); n.ctrlEnv.connect(n.ctrlMap);
   n.fxOut.connect(n.mon); n.mon.connect(n.master);
   n.master.connect(n.lim); n.lim.connect(ctx.destination);
-  nodes = n; buildChain();
+  nodes = n; buildChain(); applyRepeat();
+}
+
+function applyRepeat(){
+  const n = nodes; if (!n) return;
+  const once = state.repeat === 'once';
+  try { n.ctrlMap.disconnect(); } catch (e) {}
+  if (once) n.ctrlMap.connect(n.gate.gain);
+  n.fb.gain.setTargetAtTime(once ? 0 : state.feedback, ctx.currentTime, .05);
 }
 
 function buildChain(){
@@ -417,7 +442,11 @@ function updateVu(){
   set(vuDry, sm.dry); set(vuWet, sm.wet);
 }
 
-const modesEl = $('#modes'), stylesEl = $('#styles');
+const modesEl = $('#modes'), stylesEl = $('#styles'), repeatsEl = $('#repeats');
+for (const [k, l] of Object.entries(REPEATS)) {
+  const b = document.createElement('button'); b.className = 'chip'; b.textContent = l; b.dataset.k = k;
+  b.addEventListener('click', () => { state.repeat = k; refreshChips(); applyRepeat(); }); repeatsEl.appendChild(b);
+}
 for (const [k, m] of Object.entries(MODES)) {
   const b = document.createElement('button'); b.className = 'chip'; b.textContent = m.label; b.dataset.k = k; b.style.setProperty('--chip', m.chip);
   b.addEventListener('click', () => setMode(k)); modesEl.appendChild(b);
@@ -429,7 +458,10 @@ for (const [k, l] of Object.entries(STYLES)) {
 function refreshChips(){
   modesEl.querySelectorAll('.chip').forEach(b => b.classList.toggle('on', b.dataset.k === state.mode));
   stylesEl.querySelectorAll('.chip').forEach(b => b.classList.toggle('on', b.dataset.k === state.style));
-  $('#hudMode').textContent = MODES[state.mode].label;
+  repeatsEl.querySelectorAll('.chip').forEach(b => b.classList.toggle('on', b.dataset.k === state.repeat));
+  const once = state.repeat === 'once';
+  $('#feedback').disabled = once; $('#sFeedback').style.opacity = once ? .4 : 1;
+  $('#hudMode').textContent = MODES[state.mode].label + ' · ' + (once ? 'une fois' : 'en boucle');
   document.documentElement.style.setProperty('--accent', MODES[state.mode].chip);
 }
 function setMode(k){ state.mode = k; refreshChips(); buildChain(); }
@@ -439,7 +471,7 @@ const bind = (id, fn) => { const el = $('#' + id); const apply = () => fn(parseF
 bind('drive', v => { state.drive = v; $('#vDrive').textContent = Math.round(v * 100) + ' %'; buildChain(); });
 bind('delay', v => { state.delay = v; $('#vDelay').textContent = fr(v, 2) + ' s'; $('#hudDelay').textContent = 'écho dans ' + fr(v, 2) + ' s';
   if (nodes) nodes.delay.delayTime.setTargetAtTime(v, ctx.currentTime, .08); });
-bind('feedback', v => { state.feedback = v; $('#vFeedback').textContent = Math.round(v * 100) + ' %'; if (nodes) nodes.fb.gain.setTargetAtTime(v, ctx.currentTime, .05); });
+bind('feedback', v => { state.feedback = v; $('#vFeedback').textContent = Math.round(v * 100) + ' %'; if (nodes && state.repeat === 'loop') nodes.fb.gain.setTargetAtTime(v, ctx.currentTime, .05); });
 bind('mix', v => { state.mix = v; $('#vMix').textContent = Math.round(v * 100) + ' %'; if (nodes) nodes.wet.gain.setTargetAtTime(v, ctx.currentTime, .05); });
 bind('intensity', v => { state.intensity = v; $('#vIntensity').textContent = Math.round(v * 100) + ' %'; });
 $('#monitor').addEventListener('change', e => { state.monitor = e.target.checked; if (nodes) nodes.mon.gain.setTargetAtTime(state.monitor ? .8 : 0, ctx.currentTime, .05); });
@@ -477,6 +509,7 @@ addEventListener('keydown', e => {
   if (k === 'f') toggleFs();
   if (k === 'h') { clearTimeout(idleTimer); document.body.classList.toggle('idle'); }
   if (k === 'v') { state.style = state.style === 'orbit' ? 'waves' : 'orbit'; history = []; ripples = []; refreshChips(); }
+  if (k === 'r') { state.repeat = state.repeat === 'once' ? 'loop' : 'once'; refreshChips(); applyRepeat(); }
   const keys = Object.keys(MODES); const idx = parseInt(k, 10);
   if (idx >= 1 && idx <= keys.length) setMode(keys[idx - 1]);
 });
