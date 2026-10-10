@@ -4408,8 +4408,8 @@
         "en": "A spy investigation to unmask x: keep the balance level"
       },
       "description": {
-        "fr": "Un jeu d'enquête pour découvrir les équations du premier degré. Dans une agence d'espionnage, de nuit, chaque équation est une balance en laiton : x est une mallette scellée, les nombres sont des lingots d'or. On glisse des cartes d'opération (−3, ÷2, retirer une mallette…) qui agissent toujours sur les deux plateaux ; si une carte casserait l'équilibre, la balance penche et la note « Refusé » tombe. Le but : isoler une seule mallette pour découvrir ce que vaut x, et classer l'affaire. L'équation se tape à la machine sous la balance à chaque coup, pour faire le pont vers la notation mathématique. Sept dossiers sont prévus, de la simple devinette aux parenthèses et à la mise en équation ; les deux premiers sont jouables.",
-        "en": "An investigation game to discover linear equations. In a spy agency at night, each equation is a brass balance: x is a sealed briefcase and numbers are gold bars. You drag operation cards (−3, ÷2, remove a briefcase…) that always act on both pans; if a card would break the balance, the scale tips and a \"Denied\" note drops. The goal: isolate a single briefcase to find out what x is worth, and close the case. The equation is typed out under the balance after every move, bridging the gap to mathematical notation. Seven case files are planned, from simple guessing to brackets and word problems; the first two are playable."
+        "fr": "Un jeu d'enquête pour découvrir les équations du premier degré. Dans une agence d'espionnage, de nuit, chaque équation est une balance en laiton : x est une mallette scellée, les nombres sont des lingots d'or. On glisse des cartes d'opération (−3, ÷2, retirer une mallette…) qui agissent toujours sur les deux plateaux ; si une carte casserait l'équilibre, la balance penche et la note « Refusé » tombe. Le but : isoler une seule mallette pour découvrir ce que vaut x, et classer l'affaire. L'équation se tape à la machine sous la balance à chaque coup, pour faire le pont vers la notation mathématique. Sept dossiers et 56 missions mènent de la simple devinette aux nombres négatifs (des ballons espions), aux parenthèses (des plis scellés) et à la mise en équation de témoignages.",
+        "en": "An investigation game to discover linear equations. In a spy agency at night, each equation is a brass balance: x is a sealed briefcase and numbers are gold bars. You drag operation cards (−3, ÷2, remove a briefcase…) that always act on both pans; if a card would break the balance, the scale tips and a \"Denied\" note drops. The goal: isolate a single briefcase to find out what x is worth, and close the case. The equation is typed out under the balance after every move, bridging the gap to mathematical notation. Seven case files and 56 missions lead from simple guessing to negative numbers (spy balloons), brackets (sealed envelopes) and turning witness statements into equations."
       },
       "categorie": "sciences",
       "tags": [
@@ -4445,7 +4445,7 @@
       ],
       "premier_commit": "2026-10-10",
       "dernier_commit": "2026-10-10",
-      "commits": 3,
+      "commits": 10,
       "depot": {
         "nom": "algebre",
         "chemin": null,
@@ -4456,14 +4456,14 @@
       },
       "points_forts": {
         "fr": [
-          "Moteur d'équations indépendant de l'affichage, en fractions exactes (aucun flottant), avec 27 tests lançables dans Node ou le navigateur",
+          "Moteur d'équations indépendant de l'affichage, en fractions exactes (aucun flottant), avec 29 tests lançables dans Node ou le navigateur",
           "Un solveur en largeur vérifie que le « par » de chaque niveau est exactement le nombre minimal de coups",
           "Balance en laiton en SVG qui oscille sur un ressort amorti, avec un cadran d'équilibre ; les lingots tombent et s'empilent, et une carte impossible fait pencher le plateau fautif",
           "Niveaux décrits en données (« 2x+1=9 », cartes, par) : le même format servira au futur mode création partageable par lien",
           "Direction artistique d'agence d'espionnage : dossiers caviardés, briefings du QG, équation tapée à la machine, tampon « Affaire classée » à chaque victoire"
         ],
         "en": [
-          "An equation engine independent of rendering, using exact fractions (no floats), with 27 tests that run in Node or the browser",
+          "An equation engine independent of rendering, using exact fractions (no floats), with 29 tests that run in Node or the browser",
           "A breadth-first solver checks that each level's par is exactly the minimum number of moves",
           "An SVG brass balance that sways on a damped spring, with a balance gauge; gold bars drop and stack, and an impossible card tips the offending pan",
           "Levels written as data (\"2x+1=9\", cards, par): the same format will power a future creation mode shared by link",
