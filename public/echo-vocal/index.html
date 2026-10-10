@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Écho Vocal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  /* Layout : scène plein écran (canvas), dock de réglages flottant en bas, portail d'activation centré. */
+  --bg:#07070c; --panel:rgba(12,12,22,.82); --line:rgba(255,255,255,.1);
+  --fg:#ecebf3; --muted:#8f8ca6; --accent:#7df2ff; --warn:#ffb86b; --err:#ff7a90;
+  --display:'Syne',system-ui,sans-serif; --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden}
+body{background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:13px;-webkit-font-smoothing:antialiased}
+#scene{position:fixed;inset:0;width:100%;height:100%;display:block}
+#vignette{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.55) 100%)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Portail d'activation */
+#gate{position:fixed;inset:0;display:grid;place-items:center;padding:16px;background:rgba(7,7,12,.72);backdrop-filter:blur(10px);z-index:20}
+#gate.hidden{display:none}
+.card{max-width:440px;width:100%;padding:32px 28px;border:1px solid var(--line);background:var(--panel);border-radius:18px;display:grid;gap:16px}
+.card h1{font-family:var(--display);font-weight:800;font-size:34px;line-height:1;margin:0;letter-spacing:-.02em;text-wrap:balance}
+.card h1 span{color:var(--accent)}
+.card p{margin:0;color:var(--muted);line-height:1.55;font-size:13px}
+.card .note{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;background:rgba(255,184,107,.08);color:var(--warn);font-size:12px;line-height:1.45}
+#startBtn{padding:14px 18px;border:0;border-radius:12px;background:var(--accent);color:#06131a;font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.01em;transition:transform .12s}
+#startBtn:hover{transform:translateY(-1px)}
+#startBtn:disabled{opacity:.6;cursor:wait}
+#err{color:var(--err);font-size:12px;line-height:1.5;display:none}
+#err.show{display:block}
+
+/* HUD haut-gauche */
+#hud{position:fixed;left:16px;top:calc(16px + env(safe-area-inset-top,0px));display:grid;gap:6px;pointer-events:none;z-index:10;transition:opacity .4s}
+#hud .t{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.02em}
+#hud .l{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.14em}
+.vu{display:flex;gap:3px;align-items:flex-end;height:14px}
+.vu i{width:4px;height:3px;background:var(--muted);opacity:.35;border-radius:1px;transition:height .05s}
+.vu i.on{opacity:1;background:var(--vu,var(--accent))}
+
+/* Dock de réglages */
+#dock{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(900px,calc(100% - 32px));z-index:10;
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;backdrop-filter:blur(14px);padding:14px 16px;display:grid;gap:12px;transition:opacity .4s,transform .4s}
+body.idle #dock,body.idle #hud{opacity:0;pointer-events:none}
+body.idle{cursor:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;font-size:12px;color:var(--muted);transition:all .15s}
+.chip:hover{color:var(--fg);border-color:rgba(255,255,255,.25)}
+.chip.on{color:#0a0a12;background:var(--chip,var(--accent));border-color:transparent;font-weight:500}
+.sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 18px}
+.s{display:grid;gap:4px;min-width:0}
+.s label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.s label b{font-weight:500;color:var(--fg);font-variant-numeric:tabular-nums;text-transform:none;letter-spacing:0}
+input[type=range]{width:100%;accent-color:var(--accent);margin:0;height:22px}
+.tog{display:inline-flex;gap:8px;align-items:center;font-size:12px;color:var(--muted);cursor:pointer;user-select:none}
+.tog input{accent-color:var(--accent);width:15px;height:15px;margin:0}
+.sep{flex:1}
+.ghost{padding:7px 11px;border-radius:9px;border:1px solid var(--line);background:transparent;font-size:12px;color:var(--muted)}
+.ghost:hover{color:var(--fg)}
+.lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;margin-right:4px}
+@media (max-width:520px){ #dock{padding:12px} .sliders{grid-template-columns:1fr 1fr} .card h1{font-size:28px} }
+@media (prefers-reduced-motion:reduce){ #startBtn{transition:none} }
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div id="vignette"></div>
+
+<div id="hud">
+  <div class="l">Écho vocal</div>
+  <div class="t" id="hudMode">Propre</div>
+  <div class="l" id="hudDelay">écho dans 1,2 s</div>
+  <div class="vu" id="vuDry" title="Niveau micro"></div>
+  <div class="vu" id="vuWet" title="Niveau écho" style="--vu:#ff9de2"></div>
+</div>
+
+<div id="gate">
+  <div class="card">
+    <h1>Parle,<br>et l'écho <span>dessine</span>.</h1>
+    <p>Ta voix est captée au micro, renvoyée quelques secondes plus tard en écho, et la scène réagit en direct : anneaux, ondes, particules. Six textures sonores au choix, du propre au robot.</p>
+    <div class="note"><span>🎧</span><span>Mets un casque : sans casque, le haut-parleur rentre dans le micro et l'écho se répète à l'infini.</span></div>
+    <button id="startBtn">Activer le micro</button>
+    <div id="err"></div>
+  </div>
+</div>
+
+<div id="dock">
+  <div class="row">
+    <span class="lbl">Son</span>
+    <div class="chips" id="modes"></div>
+    <span class="sep"></span>
+    <span class="lbl">Visuel</span>
+    <div class="chips" id="styles"></div>
+  </div>
+  <div class="sliders">
+    <div class="s"><label for="drive">Distorsion <b id="vDrive">50 %</b></label><input type="range" id="drive" min="0" max="1" step="0.01" value="0.5"></div>
+    <div class="s"><label for="delay">Délai écho <b id="vDelay">1,2 s</b></label><input type="range" id="delay" min="0.15" max="4" step="0.05" value="1.2"></div>
+    <div class="s"><label for="feedback">Répétitions <b id="vFeedback">45 %</b></label><input type="range" id="feedback" min="0" max="0.9" step="0.01" value="0.45"></div>
+    <div class="s"><label for="mix">Volume écho <b id="vMix">90 %</b></label><input type="range" id="mix" min="0" max="1.5" step="0.01" value="0.9"></div>
+    <div class="s"><label for="intensity">Intensité <b id="vIntensity">100 %</b></label><input type="range" id="intensity" min="0.3" max="2" step="0.05" value="1"></div>
+  </div>
+  <div class="row">
+    <label class="tog"><input type="checkbox" id="monitor"> Entendre ma voix en direct (pas seulement l'écho)</label>
+    <span class="sep"></span>
+    <button class="ghost" id="fsBtn">Plein écran (F)</button>
+    <button class="ghost" id="hideBtn">Masquer (H)</button>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const canvas = $('#scene'), g = canvas.getContext('2d');
+let W = 0, H = 0, DPR = 1;
+function resize(){ DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight;
+  canvas.width = W * DPR; canvas.height = H * DPR; g.setTransform(DPR, 0, 0, DPR, 0, 0); }
+addEventListener('resize', resize); resize();
+
+const MODES = {
+  clean: { label: 'Propre',    hue: 195, chip: '#7df2ff' },
+  over:  { label: 'Overdrive', hue: 32,  chip: '#ffb86b' },
+  fuzz:  { label: 'Fuzz',      hue: 335, chip: '#ff7ab8' },
+  crush: { label: 'Bitcrush',  hue: 125, chip: '#8dff9a' },
+  radio: { label: 'Radio',     hue: 48,  chip: '#f3d36b' },
+  robot: { label: 'Robot',     hue: 272, chip: '#c39bff' },
+};
+const STYLES = { orbit: 'Orbite', waves: 'Vagues' };
+const state = { mode: 'clean', drive: .5, delay: 1.2, feedback: .45, mix: .9, monitor: false, style: 'orbit', intensity: 1 };
+const fr = (n, d = 1) => n.toLocaleString('fr-FR', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+/* ---------- Audio ---------- */
+let ctx = null, nodes = null;
+const curve = (fn, n = 4096) => { const c = new Float32Array(n); for (let i = 0; i < n; i++) c[i] = fn(i * 2 / (n - 1) - 1); return c; };
+const tanhCurve = k => curve(x => Math.tanh(x * k) / Math.tanh(k));
+const fuzzCurve = k => curve(x => { const y = x * k; return y > 0 ? Math.min(y, .7) / .7 : Math.max(y, -1); });
+const stepCurve = lv => curve(x => Math.round(x * lv) / lv);
+
+async function start(){
+  ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'interactive' });
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: false, autoGainControl: true } });
+  if (ctx.state === 'suspended') await ctx.resume();
+  const n = {};
+  n.src = ctx.createMediaStreamSource(stream);
+  n.inGain = ctx.createGain(); n.inGain.gain.value = 1.5;
+  n.dryAn = ctx.createAnalyser(); n.dryAn.fftSize = 2048; n.dryAn.smoothingTimeConstant = .72;
+  n.fxIn = ctx.createGain(); n.fxOut = ctx.createGain();
+  n.delay = ctx.createDelay(6); n.delay.delayTime.value = state.delay;
+  n.fbFilter = ctx.createBiquadFilter(); n.fbFilter.type = 'lowpass'; n.fbFilter.frequency.value = 3400;
+  n.fb = ctx.createGain(); n.fb.gain.value = state.feedback;
+  n.wet = ctx.createGain(); n.wet.gain.value = state.mix;
+  n.wetAn = ctx.createAnalyser(); n.wetAn.fftSize = 2048; n.wetAn.smoothingTimeConstant = .72;
+  n.mon = ctx.createGain(); n.mon.gain.value = state.monitor ? .8 : 0;
+  n.master = ctx.createGain(); n.master.gain.value = .9;
+  n.lim = ctx.createDynamicsCompressor(); n.lim.threshold.value = -8; n.lim.knee.value = 4; n.lim.ratio.value = 14; n.lim.attack.value = .003; n.lim.release.value = .18;
+  n.chain = [];
+  n.src.connect(n.inGain); n.inGain.connect(n.dryAn); n.inGain.connect(n.fxIn);
+  n.fxOut.connect(n.delay); n.delay.connect(n.fbFilter); n.fbFilter.connect(n.fb); n.fb.connect(n.delay);
+  n.delay.connect(n.wet); n.wet.connect(n.wetAn); n.wetAn.connect(n.master);
+  n.fxOut.connect(n.mon); n.mon.connect(n.master);
+  n.master.connect(n.lim); n.lim.connect(ctx.destination);
+  nodes = n; buildChain();
+}
+
+function buildChain(){
+  const n = nodes; if (!n) return;
+  n.fxIn.disconnect();
+  n.chain.forEach(x => { try { x.disconnect(); } catch (e) {} if (x.stop) { try { x.stop(); } catch (e) {} } });
+  n.chain = [];
+  const d = state.drive; let last = n.fxIn;
+  const add = node => { last.connect(node); last = node; n.chain.push(node); return node; };
+  const gain = v => { const x = ctx.createGain(); x.gain.value = v; return add(x); };
+  const shaper = c => { const x = ctx.createWaveShaper(); x.curve = c; x.oversample = '2x'; return add(x); };
+  const filter = (type, f, q) => { const x = ctx.createBiquadFilter(); x.type = type; x.frequency.value = f; if (q) x.Q.value = q; return add(x); };
+  switch (state.mode) {
+    case 'over':  gain(1 + d * 9); shaper(tanhCurve(1 + d * 7)); gain(.6); break;
+    case 'fuzz':  gain(1 + d * 45); shaper(fuzzCurve(1.5)); filter('lowpass', 4200 - d * 2200); gain(.45); break;
+    case 'crush': gain(1.2); shaper(stepCurve(Math.round(2 + (1 - d) * 28))); filter('lowpass', 6000 - d * 3500); gain(.9); break;
+    case 'radio': filter('bandpass', 1800, .9 + d * 2.5); gain(2 + d * 7); shaper(tanhCurve(3.5)); filter('highpass', 500); gain(.8); break;
+    case 'robot': {
+      const ring = ctx.createGain(); ring.gain.value = 0;
+      const osc = ctx.createOscillator(); osc.type = 'sine'; osc.frequency.value = 35 + d * 280;
+      osc.connect(ring.gain); osc.start(); n.chain.push(osc);
+      add(ring); gain(1.3); break;
+    }
+    default: break;
+  }
+  last.connect(n.fxOut);
+}
+
+/* ---------- Analyse ---------- */
+const dryWave = new Uint8Array(2048), wetWave = new Uint8Array(2048), dryFreq = new Uint8Array(1024), wetFreq = new Uint8Array(1024);
+const sm = { dry: 0, wet: 0, cent: .5, dryPrev: 0 };
+function analyse(){
+  const n = nodes; if (!n) return;
+  n.dryAn.getByteTimeDomainData(dryWave); n.wetAn.getByteTimeDomainData(wetWave);
+  n.dryAn.getByteFrequencyData(dryFreq); n.wetAn.getByteFrequencyData(wetFreq);
+  const rms = w => { let s = 0; for (let i = 0; i < w.length; i += 4) { const v = (w[i] - 128) / 128; s += v * v; } return Math.sqrt(s / (w.length / 4)); };
+  const d = rms(dryWave), wv = rms(wetWave);
+  sm.dryPrev = sm.dry;
+  sm.dry = d > sm.dry ? d * .6 + sm.dry * .4 : sm.dry * .92 + d * .08;
+  sm.wet = wv > sm.wet ? wv * .6 + sm.wet * .4 : sm.wet * .92 + wv * .08;
+  let num = 0, den = 0; for (let i = 2; i < 320; i++) { num += i * dryFreq[i]; den += dryFreq[i]; }
+  const c = den > 200 ? Math.min(1, (num / den) / 140) : sm.cent;
+  sm.cent += (c - sm.cent) * .08;
+}
+
+/* ---------- Visuels ---------- */
+let ripples = [], particles = [], history = [], lastTransient = 0, lastT = 0, waveClock = 0;
+const hsla = (h, s, l, a) => `hsla(${((h % 360) + 360) % 360},${s}%,${l}%,${a})`;
+
+function spawnParticles(x, y, count, hue, speed, spread){
+  const square = state.mode === 'robot' || state.mode === 'crush';
+  for (let i = 0; i < count; i++) {
+    const a = Math.random() * Math.PI * 2, v = speed * (.3 + Math.random());
+    particles.push({ x: x + (Math.random() - .5) * spread, y: y + (Math.random() - .5) * spread, vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+      life: 1, decay: .4 + Math.random() * .8, hue: hue + (Math.random() - .5) * 40, size: 1.5 + Math.random() * 3, square });
+  }
+  if (particles.length > 900) particles.splice(0, particles.length - 900);
+}
+function drawParticles(dt){
+  g.globalCompositeOperation = 'lighter';
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i]; p.life -= p.decay * dt; if (p.life <= 0) { particles.splice(i, 1); continue; }
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= .985; p.vy *= .985;
+    g.fillStyle = hsla(p.hue, 95, 65, p.life * .9);
+    const s = p.size * (0.4 + p.life);
+    if (p.square) g.fillRect(Math.round(p.x / 4) * 4, Math.round(p.y / 4) * 4, s * 1.6, s * 1.6);
+    else { g.beginPath(); g.arc(p.x, p.y, s, 0, Math.PI * 2); g.fill(); }
+  }
+}
+
+function ringPath(wave, cx, cy, radius, amp){
+  const mode = state.mode;
+  const N = mode === 'robot' ? 40 : mode === 'crush' ? 96 : 240;
+  const jitter = mode === 'fuzz' ? .22 * state.drive : 0;
+  const grid = mode === 'crush' ? 5 : 0;
+  g.beginPath();
+  for (let k = 0; k <= N; k++) {
+    const t = (k % N) / N;
+    const idx = Math.floor(t * 1024);
+    let v = (wave[idx] - 128) / 128;
+    v *= .5 - .5 * Math.cos(t * Math.PI * 2);
+    if (jitter) v += (Math.random() - .5) * jitter;
+    const r = radius + v * radius * .6 * amp * state.intensity;
+    const a = t * Math.PI * 2 - Math.PI / 2;
+    let x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
+    if (grid) { x = Math.round(x / grid) * grid; y = Math.round(y / grid) * grid; }
+    k ? g.lineTo(x, y) : g.moveTo(x, y);
+  }
+  g.closePath();
+}
+function glowStroke(hue, sat, light, alpha, width){
+  g.lineJoin = state.mode === 'crush' ? 'miter' : 'round';
+  g.strokeStyle = hsla(hue, sat, light, alpha * .18); g.lineWidth = width * 7; g.stroke();
+  g.strokeStyle = hsla(hue, sat, light, alpha * .5); g.lineWidth = width * 2.6; g.stroke();
+  g.strokeStyle = hsla(hue, sat, light + 20, alpha); g.lineWidth = width; g.stroke();
+}
+
+function drawOrbit(now, hue, dt){
+  const cx = W / 2, cy = H / 2, S = Math.min(W, H);
+  const R = S * .16, Rw = S * .36, hueW = hue + 55;
+  g.globalCompositeOperation = 'lighter';
+
+  // Cœur lumineux
+  const core = R * (.55 + sm.dry * 2.2 * state.intensity);
+  const grad = g.createRadialGradient(cx, cy, 0, cx, cy, core);
+  grad.addColorStop(0, hsla(hue, 90, 70, .35 + sm.dry * .6)); grad.addColorStop(1, hsla(hue, 90, 50, 0));
+  g.fillStyle = grad; g.beginPath(); g.arc(cx, cy, core, 0, Math.PI * 2); g.fill();
+
+  // Spectre en pétales (micro)
+  const bins = 110; g.lineCap = 'round'; g.lineWidth = 2.2;
+  for (let i = 0; i < bins; i++) {
+    const f = dryFreq[Math.floor(Math.pow(i / bins, 1.7) * 420)] / 255;
+    if (f < .04) continue;
+    const a = i / bins * Math.PI * 2 - Math.PI / 2 + now * .05;
+    const r0 = R * .94, r1 = r0 + f * f * R * 1.6 * state.intensity;
+    g.strokeStyle = hsla(hue + f * 50, 90, 62, .25 + f * .6);
+    g.beginPath(); g.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0); g.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1); g.stroke();
+  }
+  // Spectre de l'écho, vers l'intérieur de l'anneau extérieur
+  for (let i = 0; i < bins; i++) {
+    const f = wetFreq[Math.floor(Math.pow(i / bins, 1.7) * 420)] / 255;
+    if (f < .05) continue;
+    const a = -i / bins * Math.PI * 2 - Math.PI / 2 - now * .03;
+    const r0 = Rw * 1.02, r1 = r0 - f * f * R * 1.3 * state.intensity;
+    g.strokeStyle = hsla(hueW + f * 40, 85, 65, .18 + f * .5);
+    g.beginPath(); g.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0); g.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1); g.stroke();
+  }
+
+  // Anneau guide de l'écho
+  g.beginPath(); g.arc(cx, cy, Rw, 0, Math.PI * 2); g.strokeStyle = hsla(hueW, 80, 70, .1); g.lineWidth = 1; g.stroke();
+
+  // Ondes de propagation : partent de la voix, atteignent l'anneau extérieur exactement quand l'écho sonne
+  for (let i = ripples.length - 1; i >= 0; i--) {
+    const rp = ripples[i], p = (now - rp.t) / rp.delay;
+    if (p > 1.3) { ripples.splice(i, 1); continue; }
+    const rad = R + (Rw - R) * p;
+    const alpha = p < 1 ? (1 - p * .6) * .55 * rp.s : (1.3 - p) * 2 * .6 * rp.s;
+    g.beginPath(); g.arc(cx, cy, rad, 0, Math.PI * 2);
+    g.strokeStyle = hsla(hue + 55 * Math.min(1, p), 90, 70, Math.max(0, alpha)); g.lineWidth = p < 1 ? 1.5 + rp.s * 2 : 4 + rp.s * 4; g.stroke();
+    if (!rp.hit && p >= 1) { rp.hit = true; spawnParticles(cx, cy, 40 + rp.s * 60, hueW, 60 + rp.s * 160, Rw * 2); }
+  }
+
+  // Anneau voix (direct)
+  ringPath(dryWave, cx, cy, R, 1 + sm.dry * 4);
+  glowStroke(hue, 95, 62, .95, 1.6);
+  // Anneau écho
+  ringPath(wetWave, cx, cy, Rw, 1 + sm.wet * 4.5);
+  glowStroke(hueW, 90, 66, .55 + sm.wet * 2, 1.3);
+}
+
+function drawWaves(now, hue, dt){
+  const hueW = hue + 55;
+  const yTop = H * .24, yBot = H * .76, span = yBot - yTop, pad = 24;
+  // Historique : la voix descend vers la ligne d'écho en exactement "délai" secondes
+  const hist = Array.from({ length: 128 }, (_, i) => dryWave[Math.floor(i / 128 * 1024)]);
+  history.push({ t: now, d: hist, rms: sm.dry });
+  while (history.length && now - history[0].t > state.delay * 1.02) history.shift();
+  g.globalCompositeOperation = 'lighter';
+  const step = Math.max(1, Math.floor(history.length / 80));
+  const poly = (data, y, amp, grid) => {
+    g.beginPath();
+    for (let i = 0; i < data.length; i++) {
+      const t = i / (data.length - 1);
+      let v = (data[i] - 128) / 128; v *= .5 - .5 * Math.cos(t * Math.PI * 2);
+      if (state.mode === 'fuzz') v += (Math.random() - .5) * .2 * state.drive;
+      let x = pad + t * (W - pad * 2), yy = y + v * amp;
+      if (grid) { x = Math.round(x / grid) * grid; yy = Math.round(yy / grid) * grid; }
+      i ? g.lineTo(x, yy) : g.moveTo(x, yy);
+    }
+  };
+  const grid = state.mode === 'crush' ? 5 : 0;
+  for (let i = 0; i < history.length; i += step) {
+    const h = history[i], p = (now - h.t) / state.delay; if (p > 1) continue;
+    const y = yTop + p * span;
+    poly(h.d, y, span * .14 * (1 + h.rms * 5) * state.intensity, grid);
+    g.strokeStyle = hsla(hue + 55 * p, 90, 65, .05 + (1 - Math.abs(p - .5) * 2) * .22); g.lineWidth = 1; g.stroke();
+  }
+  // Ligne guide de l'écho
+  g.beginPath(); g.moveTo(pad, yBot); g.lineTo(W - pad, yBot); g.strokeStyle = hsla(hueW, 80, 70, .12); g.lineWidth = 1; g.stroke();
+  // Flashs d'arrivée
+  for (let i = ripples.length - 1; i >= 0; i--) {
+    const rp = ripples[i], p = (now - rp.t) / rp.delay;
+    if (p > 1.3) { ripples.splice(i, 1); continue; }
+    if (!rp.hit && p >= 1) { rp.hit = true; spawnParticles(W / 2, yBot, 50 + rp.s * 60, hueW, 50 + rp.s * 140, W * .9); }
+    if (p >= 1) { const a = (1.3 - p) / .3; const gr = g.createLinearGradient(0, yBot - 80, 0, yBot + 80);
+      gr.addColorStop(0, hsla(hueW, 90, 65, 0)); gr.addColorStop(.5, hsla(hueW, 90, 70, .22 * a * rp.s)); gr.addColorStop(1, hsla(hueW, 90, 65, 0));
+      g.fillStyle = gr; g.fillRect(0, yBot - 80, W, 160); }
+  }
+  // Spectre micro en barres sous la ligne haute
+  const bars = Math.min(96, Math.floor(W / 9)), bw = (W - pad * 2) / bars;
+  for (let i = 0; i < bars; i++) {
+    const f = dryFreq[Math.floor(Math.pow(i / bars, 1.8) * 400)] / 255; if (f < .04) continue;
+    const hgt = f * f * H * .12 * state.intensity;
+    g.fillStyle = hsla(hue + f * 40, 90, 60, .12 + f * .3);
+    g.fillRect(pad + i * bw + 1, yTop - hgt / 2, bw - 2, hgt);
+  }
+  // Voix (haut) et écho (bas)
+  poly(dryWave.subarray(0, 1024).filter((_, i) => i % 4 === 0), yTop, span * .16 * (1 + sm.dry * 5) * state.intensity, grid);
+  glowStroke(hue, 95, 62, .95, 1.6);
+  poly(wetWave.subarray(0, 1024).filter((_, i) => i % 4 === 0), yBot, span * .16 * (1 + sm.wet * 5) * state.intensity, grid);
+  glowStroke(hueW, 90, 66, .55 + sm.wet * 2, 1.3);
+}
+
+function postFx(){
+  g.globalCompositeOperation = 'source-over';
+  const m = state.mode;
+  if (m === 'crush' && Math.random() < .08 + state.drive * .25 * state.intensity) {
+    const slices = 1 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < slices; i++) {
+      const y = Math.random() * H, h = 6 + Math.random() * 50, dx = (Math.random() - .5) * 90 * state.drive;
+      g.drawImage(canvas, 0, y * DPR, canvas.width, h * DPR, dx, y, W, h);
+    }
+  }
+  if (m === 'robot' || m === 'radio') {
+    g.fillStyle = m === 'radio' ? 'rgba(40,25,0,.14)' : 'rgba(0,0,0,.18)';
+    for (let y = (performance.now() / 40) % 4; y < H; y += 4) g.fillRect(0, y, W, 1.2);
+  }
+  if (m === 'radio' && Math.random() < .5) {
+    g.fillStyle = `rgba(255,220,150,${.02 + Math.random() * .03})`; g.fillRect(0, 0, W, H);
+  }
+}
+
+function frame(ts){
+  requestAnimationFrame(frame);
+  const now = ts / 1000, dt = Math.min(.05, now - (lastT || now)); lastT = now;
+  analyse();
+  const mode = MODES[state.mode], hue = mode.hue + (sm.cent - .5) * 70;
+  // Détection d'attaque : chaque élan de voix lance une onde qui rejoindra l'écho
+  if (nodes && sm.dry > .045 && sm.dry > sm.dryPrev * 1.35 && now - lastTransient > .14) {
+    lastTransient = now; const s = Math.min(1, sm.dry * 4);
+    ripples.push({ t: now, delay: state.delay, s, hit: false });
+    if (state.style === 'orbit') spawnParticles(W / 2, H / 2, 6 + s * 20, hue, 40 + s * 120, Math.min(W, H) * .3);
+    else spawnParticles(W / 2, H * .24, 6 + s * 20, hue, 40 + s * 120, W * .8);
+  }
+  g.globalCompositeOperation = 'source-over';
+  g.fillStyle = `rgba(7,7,12,${state.style === 'orbit' ? .2 : .28})`; g.fillRect(0, 0, W, H);
+  if (state.style === 'orbit') drawOrbit(now, hue, dt); else drawWaves(now, hue, dt);
+  drawParticles(dt);
+  postFx();
+  updateVu();
+}
+requestAnimationFrame(frame);
+
+/* ---------- Interface ---------- */
+const vuDry = $('#vuDry'), vuWet = $('#vuWet');
+for (const el of [vuDry, vuWet]) for (let i = 0; i < 18; i++) { const b = document.createElement('i'); b.style.height = (3 + i * .6) + 'px'; el.appendChild(b); }
+function updateVu(){
+  const set = (el, v) => { const n = Math.min(18, Math.round(Math.sqrt(v) * 24)); el.childNodes.forEach((b, i) => b.classList.toggle('on', i < n)); };
+  set(vuDry, sm.dry); set(vuWet, sm.wet);
+}
+
+const modesEl = $('#modes'), stylesEl = $('#styles');
+for (const [k, m] of Object.entries(MODES)) {
+  const b = document.createElement('button'); b.className = 'chip'; b.textContent = m.label; b.dataset.k = k; b.style.setProperty('--chip', m.chip);
+  b.addEventListener('click', () => setMode(k)); modesEl.appendChild(b);
+}
+for (const [k, l] of Object.entries(STYLES)) {
+  const b = document.createElement('button'); b.className = 'chip'; b.textContent = l; b.dataset.k = k;
+  b.addEventListener('click', () => { state.style = k; history = []; ripples = []; refreshChips(); }); stylesEl.appendChild(b);
+}
+function refreshChips(){
+  modesEl.querySelectorAll('.chip').forEach(b => b.classList.toggle('on', b.dataset.k === state.mode));
+  stylesEl.querySelectorAll('.chip').forEach(b => b.classList.toggle('on', b.dataset.k === state.style));
+  $('#hudMode').textContent = MODES[state.mode].label;
+  document.documentElement.style.setProperty('--accent', MODES[state.mode].chip);
+}
+function setMode(k){ state.mode = k; refreshChips(); buildChain(); }
+refreshChips();
+
+const bind = (id, fn) => { const el = $('#' + id); const apply = () => fn(parseFloat(el.value)); el.addEventListener('input', apply); apply(); };
+bind('drive', v => { state.drive = v; $('#vDrive').textContent = Math.round(v * 100) + ' %'; buildChain(); });
+bind('delay', v => { state.delay = v; $('#vDelay').textContent = fr(v, 2) + ' s'; $('#hudDelay').textContent = 'écho dans ' + fr(v, 2) + ' s';
+  if (nodes) nodes.delay.delayTime.setTargetAtTime(v, ctx.currentTime, .08); });
+bind('feedback', v => { state.feedback = v; $('#vFeedback').textContent = Math.round(v * 100) + ' %'; if (nodes) nodes.fb.gain.setTargetAtTime(v, ctx.currentTime, .05); });
+bind('mix', v => { state.mix = v; $('#vMix').textContent = Math.round(v * 100) + ' %'; if (nodes) nodes.wet.gain.setTargetAtTime(v, ctx.currentTime, .05); });
+bind('intensity', v => { state.intensity = v; $('#vIntensity').textContent = Math.round(v * 100) + ' %'; });
+$('#monitor').addEventListener('change', e => { state.monitor = e.target.checked; if (nodes) nodes.mon.gain.setTargetAtTime(state.monitor ? .8 : 0, ctx.currentTime, .05); });
+
+const startBtn = $('#startBtn'), err = $('#err');
+startBtn.addEventListener('click', async () => {
+  err.classList.remove('show'); startBtn.disabled = true; startBtn.textContent = 'Connexion au micro…';
+  try {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('nomedia');
+    await start();
+    $('#gate').classList.add('hidden'); armIdle();
+  } catch (e) {
+    startBtn.disabled = false; startBtn.textContent = 'Réessayer';
+    const msg = e && e.message === 'nomedia'
+      ? 'Ce navigateur ne donne pas accès au micro ici. Ouvre le fichier dans Chrome, Edge ou Firefox, ou héberge-le en https.'
+      : (e && (e.name === 'NotAllowedError' || e.name === 'SecurityError'))
+        ? 'Accès au micro refusé. Autorise le micro pour cette page (icône à gauche de l\'adresse) puis réessaie.'
+        : (e && e.name === 'NotFoundError') ? 'Aucun micro détecté. Branche un micro ou vérifie les réglages système.'
+        : 'Impossible de démarrer l\'audio : ' + (e && e.message ? e.message : e);
+    err.textContent = msg; err.classList.add('show');
+  }
+});
+
+// Masquage automatique des contrôles quand on ne bouge plus
+let idleTimer = null;
+function armIdle(){ document.body.classList.remove('idle'); clearTimeout(idleTimer); idleTimer = setTimeout(() => { if (nodes) document.body.classList.add('idle'); }, 4000); }
+addEventListener('pointermove', armIdle); addEventListener('pointerdown', armIdle); addEventListener('keydown', armIdle);
+$('#hideBtn').addEventListener('click', () => { clearTimeout(idleTimer); document.body.classList.add('idle'); });
+$('#fsBtn').addEventListener('click', toggleFs);
+function toggleFs(){ const d = document; if (d.fullscreenElement) d.exitFullscreen && d.exitFullscreen();
+  else if (d.documentElement.requestFullscreen) d.documentElement.requestFullscreen().catch(() => {}); }
+addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return;
+  const k = e.key.toLowerCase();
+  if (k === 'f') toggleFs();
+  if (k === 'h') { clearTimeout(idleTimer); document.body.classList.toggle('idle'); }
+  if (k === 'v') { state.style = state.style === 'orbit' ? 'waves' : 'orbit'; history = []; ripples = []; refreshChips(); }
+  const keys = Object.keys(MODES); const idx = parseInt(k, 10);
+  if (idx >= 1 && idx <= keys.length) setMode(keys[idx - 1]);
+});
+document.addEventListener('visibilitychange', () => { if (ctx && !document.hidden && ctx.state === 'suspended') ctx.resume(); });
+})();
+</script>
+</body>
+</html>
