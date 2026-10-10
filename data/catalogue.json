@@ -4478,7 +4478,8 @@
         "addGame",
         "lesupslab__fractalnewton",
         "Permi",
-        "Tetris"
+        "Tetris",
+        "Secdeg"
       ],
       "versions_precedentes": [],
       "visuel": {
@@ -4488,6 +4489,108 @@
           "#c99a3b",
           "#f2c14e",
           "#c8372d"
+        ],
+        "mobile": "portrait"
+      },
+      "mise_en_avant": {
+        "score": 7,
+        "phare": null,
+        "pourquoi": {
+          "fr": "",
+          "en": ""
+        }
+      },
+      "visibilite": "public"
+    },
+    {
+      "slug": "Secdeg",
+      "hh": 45,
+      "titre": "Le livre de la restauration",
+      "accroche": {
+        "fr": "Bagdad, an 820 : apprendre les équations du second degré aux côtés d'al-Khwârizmî",
+        "en": "Baghdad, 820 AD: learn quadratic equations alongside al-Khwarizmi"
+      },
+      "description": {
+        "fr": "Une web app pour comprendre d'où vient la formule des racines, au lieu de l'apprendre par cœur. L'élève devient l'apprenti d'al-Khwârizmî, dont le livre al-jabr a donné son nom à l'algèbre. En mode Histoire, sept chapitres dans la ville ronde de Bagdad : on découpe le rectangle des « dix racines », on le glisse contre le carré, on complète le coin, puis on découvre le ± que le maître refusait, al-jabr, la « question impossible » (Δ < 0), les fontaines paraboliques des frères Banû Mûsâ et, devant le calife, la phrase du maître qui se transforme en x = (−b ± √Δ) / 2a. En mode Cours, les mêmes gestes en douze étapes sobres, projetables au tableau. Trois jeux complètent l'ensemble : les questions du calife (combien de solutions ?), la cour à carreler (puzzle de tuiles) et les fontaines (régler a, b, c pour viser les bassins). Le code couleur mathématique reprend les pigments des céramiques abbassides : bleu de cobalt pour x², ambre pour les racines, vert de cuivre pour le coin, pourpre de manganèse pour Δ.",
+        "en": "A web app for understanding where the quadratic formula comes from, instead of memorising it. The student becomes the apprentice of al-Khwarizmi, whose book al-jabr gave algebra its name. In Story mode, seven chapters in the round city of Baghdad: you cut the rectangle of \"ten roots\", slide it against the square, complete the corner, then discover the ± the master refused, al-jabr, the \"impossible question\" (Δ < 0), the parabolic fountains of the Banu Musa brothers and, before the caliph, the master's sentence turning into x = (−b ± √Δ) / 2a. In Course mode, the same moves in twelve plain steps, ready to project in class. Three games round it off: the caliph's questions (how many solutions?), the courtyard to tile (a tile puzzle) and the fountains (tune a, b, c to hit the basins). The colour code follows the pigments of Abbasid ceramics: cobalt blue for x², amber for the roots, copper green for the corner, manganese purple for Δ."
+      },
+      "categorie": "sciences",
+      "tags": [
+        "mathématiques",
+        "algèbre",
+        "équations du second degré",
+        "pédagogie",
+        "histoire des sciences",
+        "jeu narratif",
+        "PWA",
+        "mobile"
+      ],
+      "tech": [
+        "Svelte 5 (runes)",
+        "TypeScript",
+        "Vite",
+        "KaTeX",
+        "SVG (diagrammes manipulables, carte, scène des fontaines)",
+        "Pointer Events (glisser-déposer au doigt et à la souris)",
+        "vite-plugin-pwa (installable, hors ligne)",
+        "localStorage",
+        "Fontsource (Alegreya, Alegreya Sans, Reem Kufi)",
+        "Vitest",
+        "Playwright (parcours de bout en bout)",
+        "GitHub Actions et GitHub Pages"
+      ],
+      "tech_courtes": [
+        "Svelte 5",
+        "TypeScript",
+        "KaTeX"
+      ],
+      "statut": "en-cours",
+      "cadre": "perso",
+      "langues": [
+        "fr"
+      ],
+      "premier_commit": "2026-10-10",
+      "dernier_commit": "2026-10-10",
+      "commits": 9,
+      "depot": {
+        "nom": "Secdeg",
+        "chemin": null,
+        "public": true
+      },
+      "liens": {
+        "live": "https://hugohismans.github.io/Secdeg/"
+      },
+      "points_forts": {
+        "fr": [
+          "Un mode Histoire en sept chapitres, fidèle aux sources : le problème des 39 dirhams, les mots mâl et jidhr, les racines 3 et 7, la « question impossible » et le refus des négatifs viennent du vrai livre d'al-Khwârizmî",
+          "Le même diagramme de complétion du carré sert à l'exemple chiffré et à la démonstration générale, avec un code couleur identique dans la géométrie, les formules et la parabole",
+          "Moteur mathématique isolé en fractions exactes : racines exactes avec radicaux, saisie tolérante (5/2, 2,5, √5), diagnostic des erreurs typiques (signe de b, oubli du ±, oubli de 2a, Δ faux) et adaptativité",
+          "Une pédagogie bienveillante : pistes graduées, Sifr le chat qui vient montrer la piste après trois erreurs, puis le maître qui écrit la réponse",
+          "PWA hors ligne, mode projection pour la classe, près de cent tests Vitest et un parcours Playwright qui joue les sept chapitres"
+        ],
+        "en": [
+          "A seven-chapter Story mode true to the sources: the 39-dirham problem, the words mal and jidhr, the roots 3 and 7, the \"impossible question\" and the refusal of negatives all come from al-Khwarizmi's actual book",
+          "The same completing-the-square diagram drives both the numeric example and the general proof, with one colour code shared by the geometry, the formulas and the parabola",
+          "An isolated maths engine with exact fractions: exact roots with radicals, forgiving input (5/2, 2,5, √5), diagnosis of typical mistakes (sign of b, missing ±, missing 2a, wrong Δ) and adaptivity",
+          "A kind pedagogy: graded hints, Sifr the cat who comes to point at the clue after three mistakes, then the master who writes the answer",
+          "Offline PWA, a projection mode for the classroom, nearly a hundred Vitest tests and a Playwright run that plays all seven chapters"
+        ]
+      },
+      "mode_emploi": {
+        "fr": "Entrer son prénom, puis choisir l'Histoire (sept chapitres sur la carte de Bagdad) ou le Cours. Glisser les bandes contre le carré, toucher le coin pour le compléter, répondre au maître ; « Continuer » ou la touche Entrée fait avancer le récit",
+        "en": "Enter your first name, then choose the Story (seven chapters on the map of Baghdad) or the Course. Drag the strips against the square, tap the corner to complete it, answer the master; \"Continuer\" or the Enter key moves the story along"
+      },
+      "lies": [
+        "algebre"
+      ],
+      "versions_precedentes": [],
+      "visuel": {
+        "couleurs": [
+          "#f2e9d6",
+          "#1f4c8f",
+          "#a9661a",
+          "#2c7356",
+          "#6b3a73"
         ],
         "mobile": "portrait"
       },
