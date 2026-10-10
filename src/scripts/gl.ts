@@ -56,6 +56,11 @@ export function initGL(hooks: GlHooks) {
   if (!data || !document.getElementById('cosmos')) return;
   let api: CosmosApi | null = null, booting = false;
 
+  /* 3D coupée par le garde-fou (pas par le mode calme) : on propose de la relancer à la main */
+  const retry = document.querySelector<HTMLAnchorElement>('.gl-retry');
+  if (retry && root.dataset.gl === 'off' && location.hash !== '#sans3d' && 'WebGL2RenderingContext' in window) retry.hidden = false;
+  retry?.addEventListener('click', (e) => { e.preventDefault(); retry.hidden = true; store.del(OFF); store.del('hh-gl-crash'); clearBoot(); root.dataset.gl = 'ok'; log('relance manuelle de la 3D'); boot(); });
+
   const fail = (reason: string, permanent: boolean) => {
     log('retour au ciel CSS : ' + reason);
     if (permanent) store.set(OFF, reason);

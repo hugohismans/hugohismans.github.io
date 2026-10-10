@@ -29,6 +29,6 @@ const split = lines.map((line, li) => [...line].map((ch, j) => ({ ch, i: li * 3 
   <div class="hero__foot hero__fade" style="--d:450">
     <p class="hero__from" set:html={T('hero.from')} />
     <span class="hero__scroll" aria-hidden="true"><i></i>{t('hero.scroll')}</span>
-    <p class="hero__bh-cap"><b>{t('hero.bh.title')}</b><span class="gl-only">{T('hero.bh.gl')}</span><span class="nogl-only">{T('hero.bh.nogl')}</span></p>
+    <p class="hero__bh-cap"><b>{t('hero.bh.title')}</b><span class="gl-only">{T('hero.bh.gl')}</span><span class="nogl-only">{T('hero.bh.nogl')} <a class="gl-retry" href="#avec3d" hidden>{t('hero.bh.retry')}</a></span></p>
   </div>
 </section>

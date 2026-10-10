@@ -64,11 +64,18 @@ const isPaper = bodyClass?.includes('paper');
          Une fois : on saute la 3D pour cette visite. Deux fois de suite : plus jamais sur cet appareil. */
       var n = (parseInt(ls && ls.getItem('hh-gl-crash'), 10) || 0) + 1;
       ls && ls.setItem('hh-gl-crash', String(n));
-      if (n >= 2) ls && ls.setItem('hh-gl-off', 'crash');
+      if (n >= 2) ls && ls.setItem('hh-gl-off', 'crash:' + Date.now());
       ls && ls.removeItem('hh-gl-boot'); ss && ss.removeItem('hh-gl-boot');
       gl = 'off';
     }
-    if (ls && ls.getItem('hh-gl-off')) gl = 'off';
+    var off = ls && ls.getItem('hh-gl-off');
+    if (off) {
+      /* les anciennes versions posaient ce drapeau trop vite et pour toujours :
+         on ignore leurs valeurs, et un vrai double plantage n'est retenu que 3 jours */
+      var at = /^crash:(\d+)$/.exec(off);
+      if (!at || Date.now() - +at[1] > 3 * 864e5) { ls.removeItem('hh-gl-off'); ls.removeItem('hh-gl-crash'); off = null; }
+    }
+    if (off) gl = 'off';
   } catch (e) {}
   if (location.hash === '#sans3d' || /[?&]nogl\b/.test(location.search)) gl = 'off';
   d.setAttribute('data-gl', gl);
