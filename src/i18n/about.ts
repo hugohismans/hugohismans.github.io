@@ -1,5 +1,5 @@
 /**
- * Texte « À propos » — PROVISOIRE, à réécrire avec Hugo.
+ * Texte « À propos », validé par Hugo.
  * C'est le seul endroit à modifier : titre (avec une partie en italique dans <em>),
  * petit sur-titre, et paragraphes. Le HTML simple (<em>, <strong>, <a>) est permis.
  */
@@ -8,16 +8,16 @@ export const ABOUT = {
     kicker: 'Le pilote',
     title: "Bonjour, <em>moi c'est Hugo.</em>",
     paragraphs: [
-      "Je construis des choses qui se lancent d'un clic : des jeux pour un ou pour toute une tablée, des simulations où la physique se manipule à la main, et des outils qui servent au quotidien.",
-      'Beaucoup naissent en un week-end, certains deviennent des chantiers de plusieurs mois. Tous sont ici, rangés en amas comme des étoiles : la taille de chacune dit à quel point le projet brille, sa couleur dit où il vit.',
+      "J'aime faire des projets. Beaucoup de sujets m'intéressent, des jeux à la physique en passant par les maths et les petits outils du quotidien, et ça finit souvent par devenir quelque chose qu'on peut essayer ici.",
+      "Certains sont nés en un week-end, d'autres m'ont occupé des mois. Je les garde tous ici, finis ou pas, parce que c'est comme ça que j'apprends : en construisant.",
     ],
   },
   en: {
     kicker: 'The pilot',
     title: "Hello, <em>I'm Hugo.</em>",
     paragraphs: [
-      'I build things that launch in one click: games for one player or a whole table, simulations where you can handle physics with your hands, and tools that are useful every day.',
-      'Many are born over a weekend, some grow into projects that last months. They are all here, grouped into clusters like stars: the size of each one tells how brightly the project shines, its colour tells where it lives.',
+      'I like making projects. A lot of things interest me, from games to physics, maths and small everyday tools, and they often end up as something you can try right here.',
+      "Some were born over a weekend, others kept me busy for months. I keep them all here, finished or not, because that's how I learn: by building.",
     ],
   },
 } as const;
