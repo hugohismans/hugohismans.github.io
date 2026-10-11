@@ -4603,6 +4603,109 @@
         }
       },
       "visibilite": "public"
+    },
+    {
+      "slug": "coursier-relativiste",
+      "hh": 46,
+      "titre": "Le Coursier relativiste",
+      "accroche": {
+        "fr": "Livre des colis dans une ville où la lumière ne va qu'à 30 m/s",
+        "en": "Deliver parcels in a town where light only travels at 30 m/s"
+      },
+      "description": {
+        "fr": "Un jeu de livraison en vue subjective dans une ville où la vitesse de la lumière est réglable, de 10 à 100 m/s. À scooter, on atteint vite une fraction notable de c : le décor se resserre vers l'avant, bleuit devant et rougit derrière, certaines couleurs passent dans l'infrarouge ou l'ultraviolet, et deux horloges divergent, ta montre (ta batterie) et celle de la ville (les délais des clients). Tout est calculé, pas truqué : aberration et retard de la lumière par sommet, Doppler spectral par pixel, effet projecteur. Trois tournées font comprendre l'effet Doppler et le paradoxe des jumeaux en jouant ; une page Théorie l'explique en trois niveaux.",
+        "en": "A first-person delivery game in a town where the speed of light can be set from 10 to 100 m/s. On a scooter you quickly reach a sizeable fraction of c: the scenery crowds towards the front, turns blue ahead and red behind, some colours slip into infrared or ultraviolet, and two clocks drift apart — your watch (your battery) and the town's (your customers' deadlines). Nothing is faked: aberration and light delay per vertex, spectral Doppler per pixel, headlight effect. Three delivery rounds teach the Doppler effect and the twin paradox through play; a Theory page explains it at three levels."
+      },
+      "categorie": "jeux",
+      "tags": [
+        "relativité restreinte",
+        "effet Doppler",
+        "paradoxe des jumeaux",
+        "vue subjective",
+        "livraison",
+        "puzzle",
+        "inclinaison du téléphone",
+        "pédagogie",
+        "théorie en trois niveaux"
+      ],
+      "tech": [
+        "JavaScript sans framework",
+        "Three.js (WebGL2, shaders GLSL maison)",
+        "Vite",
+        "Vitest (775 tests)",
+        "DeviceOrientation (inclinaison, permission iOS)",
+        "Pointer Events multi-touch",
+        "Wake Lock, plein écran, manifeste PWA",
+        "MathML (page Théorie)",
+        "Playwright (vérifications et captures)",
+        "GitHub Actions + GitHub Pages"
+      ],
+      "tech_courtes": [
+        "Three.js / GLSL",
+        "JavaScript sans framework",
+        "Vite + Vitest"
+      ],
+      "statut": "en-cours",
+      "cadre": "perso",
+      "langues": [
+        "fr"
+      ],
+      "premier_commit": "2026-10-11",
+      "dernier_commit": "2026-10-11",
+      "commits": 17,
+      "depot": {
+        "nom": "aSlower",
+        "chemin": null,
+        "public": true
+      },
+      "liens": {
+        "live": "https://hugohismans.github.io/aSlower/",
+        "theorie": "https://hugohismans.github.io/aSlower/theorie/"
+      },
+      "points_forts": {
+        "fr": [
+          "Rendu relativiste exact dans le navigateur : aberration et retard de la lumière calculés par sommet, Doppler par pixel à partir d'un vrai modèle spectral (soleil à 5 800 K, réflectances avec infrarouge et ultraviolet), effet projecteur en D⁴ et vision « classique » à maintenir pour comparer",
+          "Physique exacte et testée : vitesse propre et segments hyperboliques, juste au millionième quel que soit le nombre d'images par seconde ; vitesse de la lumière réglable par le joueur, le jeu s'adapte",
+          "Deux horloges au cœur du jeu : ta montre est ta batterie, l'horloge de la ville fixe les délais ; attendre coûte plus cher que tourner vite, le paradoxe des jumeaux devient une stratégie",
+          "Pensé pour le téléphone : direction par inclinaison avec permission iOS et repli au doigt, multi-touch, 60 images/s sur iPhone, installation sur l'écran d'accueil",
+          "Inspiré d'OpenRelativity (MIT Game Lab, « A Slower Speed of Light »), réécrit en GLSL et corrigé ; page Théorie débutant, intermédiaire et expert"
+        ],
+        "en": [
+          "Exact relativistic rendering in the browser: aberration and light delay per vertex, per-pixel Doppler from a real spectral model (5,800 K sun, reflectances with infrared and ultraviolet), D⁴ headlight effect and a hold-to-compare classic view",
+          "Exact, tested physics: proper velocity and hyperbolic segments, accurate to a millionth at any frame rate; the speed of light is a player setting and the game adapts",
+          "Two clocks at the heart of the game: your watch is your battery, the town clock sets the deadlines; waiting costs more than driving fast, so the twin paradox becomes a strategy",
+          "Built for phones: tilt steering with the iOS permission flow and a touch fallback, multi-touch, 60 fps on iPhone, add-to-home-screen install",
+          "Inspired by OpenRelativity (MIT Game Lab, \"A Slower Speed of Light\"), rewritten in GLSL and fixed; a Theory page at beginner, intermediate and expert levels"
+        ]
+      },
+      "mode_emploi": {
+        "fr": "Sur téléphone, en paysage : maintenir la moitié droite pour accélérer, pencher le téléphone (ou glisser à gauche) pour tourner, Frein pour ralentir, 👁 pour voir la ville sans relativité. Au clavier : flèches, Espace pour freiner, C pour la vision classique. La vitesse de la lumière se règle dans Réglages.",
+        "en": "On a phone, in landscape: hold the right half to accelerate, tilt the phone (or swipe on the left) to steer, Brake to slow down, 👁 to see the town without relativity. On a keyboard: arrows, Space to brake, C for the classic view. The speed of light is set in Settings."
+      },
+      "lies": [
+        "temps-propre",
+        "periastre"
+      ],
+      "versions_precedentes": [],
+      "visuel": {
+        "couleurs": [
+          "#0A0D14",
+          "#FFD54F",
+          "#4F8BFF",
+          "#E8371E",
+          "#8A3FD1"
+        ],
+        "mobile": "paysage"
+      },
+      "mise_en_avant": {
+        "score": 10,
+        "phare": 9,
+        "pourquoi": {
+          "fr": "La relativité restreinte se voit et se joue : une ville où la lumière est lente, rendue exactement dans le navigateur.",
+          "en": "Special relativity you can see and play: a town with slow light, rendered exactly in the browser."
+        }
+      },
+      "visibilite": "public"
     }
   ],
   "anciennes_versions": [
