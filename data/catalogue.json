@@ -1252,7 +1252,7 @@
       },
       "mise_en_avant": {
         "score": 7,
-        "phare": 3,
+        "phare": 4,
         "pourquoi": {
           "fr": "Le jeu d'indices entre amis, en ligne : un mot secret, des indices d'un seul mot, un chrono. Le jeu refuse les indices trop proches et pardonne les fautes de frappe.",
           "en": "The online clue game for friends: a secret word, one-word clues, a timer. It rejects clues that are too close and forgives typos."
@@ -2180,7 +2180,7 @@
       },
       "mise_en_avant": {
         "score": 10,
-        "phare": 7,
+        "phare": 8,
         "pourquoi": {
           "fr": "Un monde à l'encre et au papier, traversé de portails récursifs qui changent ta taille. Deux mois de travail, 223 commits.",
           "en": "An ink-and-paper world crossed by recursive portals that change your size. Two months of work, 223 commits."
@@ -2284,7 +2284,7 @@
       },
       "mise_en_avant": {
         "score": 10,
-        "phare": 6,
+        "phare": 7,
         "pourquoi": {
           "fr": "Un vrai trou noir, calculé pixel par pixel par un shader et vérifié contre la théorie, à explorer depuis un vaisseau avec voix et musique.",
           "en": "A real black hole, computed pixel by pixel by a shader and checked against theory, explored from a ship with voice and music."
@@ -2787,7 +2787,7 @@
       },
       "mise_en_avant": {
         "score": 9,
-        "phare": 4,
+        "phare": 5,
         "pourquoi": {
           "fr": "Un globe qu'on comprend en une seconde, habillé en carte marine de nuit : drapeaux, capitales, monnaies, en français et en anglais.",
           "en": "A globe you understand in a second, dressed as a night-time nautical chart: flags, capitals, currencies, in French and English."
@@ -3410,7 +3410,7 @@
       },
       "mise_en_avant": {
         "score": 9,
-        "phare": 2,
+        "phare": 3,
         "pourquoi": {
           "fr": "Fais rebondir les bulles et fabrique le nombre cible : un jeu de calcul au néon, onze ambiances, installable sur téléphone.",
           "en": "Bounce the bubbles and build the target number: a neon math game with eleven themes, installable on your phone."
@@ -3513,7 +3513,7 @@
       },
       "mise_en_avant": {
         "score": 8,
-        "phare": 8,
+        "phare": 9,
         "pourquoi": {
           "fr": "Le poker menteur aux dés, autour d'une table de feutre vert : sur un seul téléphone ou en ligne entre amis.",
           "en": "Liar's dice poker around a green felt table: on a single phone or online with friends."
@@ -3678,7 +3678,7 @@
       },
       "mise_en_avant": {
         "score": 9,
-        "phare": 5,
+        "phare": 6,
         "pourquoi": {
           "fr": "Montre ton cube à la caméra : l'appli lit les couleurs, calcule la solution et l'anime en 3D, coup par coup.",
           "en": "Show your cube to the camera: the app reads the colors, computes the solution and animates it in 3D, move by move."
@@ -4699,10 +4699,113 @@
       },
       "mise_en_avant": {
         "score": 10,
-        "phare": 9,
+        "phare": 10,
         "pourquoi": {
           "fr": "La relativité restreinte se voit et se joue : une ville où la lumière est lente, rendue exactement dans le navigateur.",
           "en": "Special relativity you can see and play: a town with slow light, rendered exactly in the browser."
+        }
+      },
+      "visibilite": "public"
+    },
+    {
+      "slug": "galerie-infinie",
+      "hh": 47,
+      "titre": "Galerie Infinie",
+      "accroche": {
+        "fr": "Marche dans un musée sans fin, accroché de vraies œuvres, qui s'efface derrière toi",
+        "en": "Walk through an endless museum hung with real artworks, which vanishes behind you"
+      },
+      "description": {
+        "fr": "Un musée infini en vue subjective, sur ordinateur comme sur téléphone. Les couloirs, salles et escaliers se construisent devant toi et disparaissent derrière, sans jamais se recouper : revenir sur ses pas mène ailleurs. Sur les murs, de vraies œuvres tirées au hasard dans une dizaine de collections ouvertes (Art Institute of Chicago, Met, Cleveland, SMK, V&A, Wikimedia…), mais aussi des affiches de films, des jaquettes de jeux, des pochettes de disques et des couvertures de livres, chacune avec son cartel et sa fiche détaillée. Un « Directeur » orchestre 33 ambiances (beaux-arts, back rooms, forêt la nuit, vaporwave, musée englouti…) selon une courbe de tension, avec des transitions douces, des sas ou des ruptures, et sème des étrangetés : une œuvre qui change quand on ne la regarde pas, un couloir qui se répète, une porte qui se mure derrière toi. Les ailes à thème s'adaptent à ce qui te retient ; tes coups de cœur forment une collection, avec des succès à débloquer.",
+        "en": "An endless first-person museum, on computer and phone alike. Corridors, rooms and staircases build themselves ahead of you and disappear behind, never overlapping: turning back leads somewhere else. The walls carry real artworks drawn at random from a dozen open collections (Art Institute of Chicago, the Met, Cleveland, SMK, V&A, Wikimedia…), plus film posters, game covers, record sleeves and book covers, each with its label and a detailed sheet. A \"Director\" orchestrates 33 atmospheres (fine arts, backrooms, a forest at night, vaporwave, a sunken museum…) along a tension curve, with smooth blends, airlocks or hard cuts, and scatters oddities: an artwork that changes when you look away, a corridor that repeats, a doorway that walls itself up behind you. Themed wings adapt to what catches your eye; your favourites become a collection, with achievements to unlock."
+      },
+      "categorie": "experiences",
+      "tags": [
+        "musée infini",
+        "espace non euclidien",
+        "vue subjective",
+        "génération procédurale",
+        "vraies œuvres",
+        "collections ouvertes",
+        "33 ambiances",
+        "étrangetés",
+        "collection et succès",
+        "contemplatif"
+      ],
+      "tech": [
+        "TypeScript strict",
+        "Three.js (géométries fusionnées, shaders sur mesure)",
+        "Svelte 5",
+        "Vite",
+        "Cloudflare Worker (agrégation des sources, relais d'images, cache)",
+        "13 API ouvertes (musées, TMDB, IGDB, MusicBrainz, Open Library…)",
+        "Web Audio procédural (ambiances, pas, réverbération)",
+        "DeviceOrientation (gyroscope, permission iOS)",
+        "Playwright (test de fuite mémoire, captures)",
+        "GitHub Actions + GitHub Pages"
+      ],
+      "tech_courtes": [
+        "Three.js",
+        "TypeScript + Svelte 5",
+        "Cloudflare Worker"
+      ],
+      "statut": "en-cours",
+      "cadre": "perso",
+      "langues": [
+        "fr"
+      ],
+      "premier_commit": "2026-10-11",
+      "dernier_commit": "2026-10-12",
+      "commits": 31,
+      "depot": {
+        "nom": "infArt",
+        "chemin": null,
+        "public": true
+      },
+      "liens": {
+        "live": "https://hugohismans.github.io/infArt/"
+      },
+      "points_forts": {
+        "fr": [
+          "Un espace impossible mais cohérent : un graphe de modules généré au fil des pas, détruit hors de vue, sans chevauchement ni apparition visible (visibilité calculée à 360° à travers les portes)",
+          "De vraies œuvres à leur taille réelle quand elle est connue, tirées de 13 sources ouvertes par un Worker Cloudflare qui agrège, met en cache et relaie les images, sans aucune clé côté navigateur ; crédits et licences sur chaque cartel",
+          "Un Directeur qui orchestre la surprise : 33 ambiances avec leurs décors et leur son procéduraux, une courbe de tension, trois types de transition et neuf étrangetés",
+          "Il s'adapte au visiteur : s'arrêter devant une œuvre, ouvrir sa fiche ou la mettre en favori rend plus probables des ailes apparentées (même artiste, même décennie, films ou jeux « dans la même lignée »)",
+          "Pensé pour le téléphone : joystick et regard au doigt ou au gyroscope, qualité adaptative selon les images par seconde, mémoire surveillée par un test de fuite automatisé"
+        ],
+        "en": [
+          "An impossible yet consistent space: a graph of modules generated as you walk and destroyed out of sight, with no overlaps and no visible pop-in (360° visibility computed through doorways)",
+          "Real artworks at their true size when known, drawn from 13 open sources through a Cloudflare Worker that aggregates, caches and relays images, with no key in the browser; credits and licences on every label",
+          "A Director that orchestrates surprise: 33 atmospheres with procedural decor and sound, a tension curve, three kinds of transitions and nine oddities",
+          "It adapts to the visitor: lingering in front of an artwork, opening its sheet or favouriting it makes related wings more likely (same artist, same decade, films or games \"in the same vein\")",
+          "Built for phones: joystick plus touch or gyroscope look, quality that adapts to the frame rate, memory checked by an automated leak test"
+        ]
+      },
+      "mode_emploi": {
+        "fr": "Sur téléphone : joystick à gauche pour marcher, glisser à droite pour regarder (ou le gyroscope, dans le menu), toucher une œuvre pour ouvrir sa fiche et la garder dans sa collection. Au clavier : ZQSD ou flèches, souris pour regarder, clic ou E pour ouvrir une œuvre, C pour la collection, Échap pour le menu (marche automatique, qualité, accessibilité).",
+        "en": "On a phone: joystick on the left to walk, swipe on the right to look (or the gyroscope, in the menu), tap an artwork to open its sheet and keep it in your collection. On a keyboard: WASD/ZQSD or arrows, mouse to look, click or E to open an artwork, C for the collection, Esc for the menu (auto-walk, quality, accessibility)."
+      },
+      "lies": [
+        "Amazeme",
+        "sumi-portals"
+      ],
+      "versions_precedentes": [],
+      "visuel": {
+        "couleurs": [
+          "#0D0C0B",
+          "#C9A14A",
+          "#6E1E22",
+          "#7A5230",
+          "#FF6FAE"
+        ],
+        "mobile": "portrait"
+      },
+      "mise_en_avant": {
+        "score": 10,
+        "phare": 2,
+        "pourquoi": {
+          "fr": "Un musée sans fin qui se construit sous tes pas, avec de vraies œuvres venues de collections du monde entier.",
+          "en": "An endless museum that builds itself under your feet, hung with real artworks from collections around the world."
         }
       },
       "visibilite": "public"
