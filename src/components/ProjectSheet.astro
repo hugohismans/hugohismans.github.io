@@ -52,7 +52,7 @@ const commits = t(p.commits > 1 ? 'fiche.commit.many' : 'fiche.commit.one', { n:
         {src && <a class="btn btn--ghost" href={src} target="_blank" rel="noopener"><Fragment set:html={t('fiche.source') + ext} /><span class="sr-only">{t('fiche.sourceSr')}</span></a>}
       </div>
     )}
-    <p class="sheet__desc" lang={fallbackLang(p.description, lang)}>{loc(p.description, lang)}</p>
+    {loc(p.description, lang).split('\n\n').map((par) => <p class="sheet__desc" lang={fallbackLang(p.description, lang)}>{par}</p>)}
     <div class="sheet__cols">
       {wow.length > 0 && <section><h2 class="sheet__h">{t('fiche.wow')}</h2><ul class="sheet__wow" lang={fallbackLang(p.points_forts, lang)}>{wow.map((w) => <li>{w}</li>)}</ul></section>}
       <section>
